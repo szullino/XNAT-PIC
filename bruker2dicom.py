@@ -49,13 +49,13 @@ def bruker2dicom(folder_to_convert, master):
             method_file = os.path.abspath(os.path.join(os.path.dirname(res), e))
             acqp_file = os.path.abspath(os.path.join(os.path.dirname(res), f))
             if os.path.exists(dseq_file):
-                with open(visu_pars_file, "r") as visuparsfile:
+                with open(visu_pars_file, "r"):
                     parameters = read_visupars_parameters(visu_pars_file)
-                with open(reco_file, "r") as recofile:
+                with open(reco_file, "r"):
                     reco_parameters = read_method_parameters(reco_file)
-                with open(method_file, "r") as methodfile:
+                with open(method_file, "r"):
                     method_parameters = read_method_parameters(method_file)
-                with open(acqp_file, "r") as acqpfile:
+                with open(acqp_file, "r"):
                     acqp_parameters = read_visupars_parameters(acqp_file)
             else:
                 break
@@ -84,6 +84,7 @@ def bruker2dicom(folder_to_convert, master):
                     "Error!", "Image data precision is neither 16 nor 32 bit!"
                 )
                 os._exit(0)
+                
             raw_data = open(dseq_file, "rb")
             img_data_precision = np.fromfile(raw_data, dtype=data_precision)
             raw_data.close()
@@ -419,21 +420,30 @@ def bruker2dicom(folder_to_convert, master):
                     else:
                         ds_temp.ProtocolName = " ".join(parameters.get("VisuAcquisitionProtocol"))
                         ds_temp.SeriesDescription = " ".join(parameters.get("VisuAcquisitionProtocol"))
-                    if np.size(parameters.get("VisuAcqRepetitionTime")) > 1:
-                        ds_temp.RepetitionTime = str(np.array(parameters.get("VisuAcqRepetitionTime"), dtype=int)[k])
+                   
+                    if np.size(parameters.get("VisuAcqRepetitionTime"))>1 and np.size(parameters.get("VisuAcqRepetitionTime"))==nframes:
+                            ds_temp.RepetitionTime=str(np.array(parameters.get("VisuAcqRepetitionTime"),dtype=int)[k]) 
+                    elif np.size(parameters.get("VisuAcqRepetitionTime"))>1 and np.size(parameters.get("VisuAcqRepetitionTime"))!=nframes:
+                        r_step =  int(nframes/np.size(parameters.get("VisuAcqRepetitionTime")))
+                        repetition_time = []
+                        for t in range(0,np.size(parameters.get("VisuAcqRepetitionTime"))):
+                            for kk in range(0,r_step):
+                                    repetition_time.append(parameters.get("VisuAcqRepetitionTime")[t])  
+                        ds_temp.RepetitionTime=str(np.array(repetition_time,dtype=float)[k])                           
                     else:
-                        ds_temp.RepetitionTime = str(np.array(parameters.get("VisuAcqRepetitionTime"), dtype=int))
-                    if (np.size(parameters.get("VisuAcqEchoTime")) > 1 and np.size(parameters.get("VisuAcqEchoTime")) == nframes):
-                        ds_temp.EchoTime = str(np.array(parameters.get("VisuAcqEchoTime"), dtype=float)[k])
-                    elif (np.size(parameters.get("VisuAcqEchoTime")) > 1 and np.size(parameters.get("VisuAcqEchoTime")) != nframes):
-                        step = int(nframes / np.size(parameters.get("VisuAcqEchoTime")))
+                        ds_temp.RepetitionTime=parameters.get("VisuAcqRepetitionTime")  
+                            
+                    if np.size(parameters.get("VisuAcqEchoTime"))>1 and np.size(parameters.get("VisuAcqEchoTime"))==nframes:
+                        ds_temp.EchoTime=str(np.array(parameters.get("VisuAcqEchoTime"),dtype=float)[k])
+                    elif np.size(parameters.get("VisuAcqEchoTime"))>1 and np.size(parameters.get("VisuAcqEchoTime"))!=nframes:
+                        e_step =  int(nframes/np.size(parameters.get("VisuAcqEchoTime")))
                         echo_time = []
-                        for t in range(0, np.size(parameters.get("VisuAcqEchoTime"))):
-                            for kk in range(0, step):
-                                echo_time.append(parameters.get("VisuAcqEchoTime")[t])
-                                ds_temp.EchoTime = str(np.array(echo_time, dtype=float)[k])
+                        for t in range(0,np.size(parameters.get("VisuAcqEchoTime"))):
+                            for kk in range(0,e_step):
+                                echo_time.append(parameters.get("VisuAcqEchoTime")[t])  
+                        ds_temp.EchoTime=str(np.array(echo_time,dtype=float)[k])                           
                     else:
-                        ds_temp.EchoTime = parameters.get("VisuAcqEchoTime")
+                        ds_temp.EchoTime=parameters.get("VisuAcqEchoTime")   
 
                     ds_temp.NumberOfAverages = str(parameters.get("VisuAcqNumberOfAverages"))
                     ds_temp.ImagingFrequency = parameters.get("VisuAcqImagingFrequency")

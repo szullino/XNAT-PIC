@@ -537,6 +537,22 @@ def bruker2dicom(folder_to_convert, master):
                         vect3.append(float(elem))
                     ds_temp.ReconstructionFieldOfView = vect3
 
+                    # DCE acquisition
+                        if "mic flash DCE" in ds_temp.ProtocolName:
+                            NRepetitions = method_parameters.get("PVM_NRepetitions")
+                            enc_matrix = str(method_parameters.get("PVM_EncMatrix"))                            
+                            enc_step = float(re.findall('[0-9]+',enc_matrix)[1])
+                            total_scan_time = ds_temp.RepetitionTime * NRepetitions * enc_step
+                            scan_time_step = int(ds_temp.RepetitionTime * enc_step) # in ms
+                            vect4 = []
+                            scan_time=0
+                            step = int(nframes/NRepetitions)
+                            for t in range(0,NRepetitions):
+                                scan_time = scan_time + scan_time_step
+                                for kk in range(0,step):
+                                    vect4.append(scan_time)                            
+                            ds_temp.TriggerTime = np.array(vect4)[k]
+
                     # DWI acquisition
                     if "diffusion" in ds_temp.ProtocolName:
                         string = str(method_parameters.get("PVM_DwBvalEach"))

@@ -221,7 +221,8 @@ def bruker2dicom(folder_to_convert, master):
             if np.size(parameters.get("VisuAcqEchoTime")) > 1:
                 ds.EchoTime = list(parameters.get("VisuAcqEchoTime"))
             else:
-                ds.EchoTime = parameters.get("VisuAcqEchoTime")
+                ds.EchoTime = parameters.get("VisuAcqEchoTime")           
+            ds.AcquisitionDuration=parameters.get("VisuAcqScanTime")   
             ds.NumberOfAverages = parameters.get("VisuAcqNumberOfAverages")
             ds.ImagingFrequency = parameters.get("VisuAcqImagingFrequency")
             ds.ImagedNucleus = parameters.get("VisuAcqImagedNucleus")
@@ -443,8 +444,9 @@ def bruker2dicom(folder_to_convert, master):
                                 echo_time.append(parameters.get("VisuAcqEchoTime")[t])  
                         ds_temp.EchoTime=str(np.array(echo_time,dtype=float)[k])                           
                     else:
-                        ds_temp.EchoTime=parameters.get("VisuAcqEchoTime")   
-
+                        ds_temp.EchoTime=parameters.get("VisuAcqEchoTime") 
+                          
+                    ds_temp.AcquisitionDuration=parameters.get("VisuAcqScanTime") 
                     ds_temp.NumberOfAverages = str(parameters.get("VisuAcqNumberOfAverages"))
                     ds_temp.ImagingFrequency = parameters.get("VisuAcqImagingFrequency")
                     ds_temp.ImagedNucleus = parameters.get("VisuAcqImagedNucleus")

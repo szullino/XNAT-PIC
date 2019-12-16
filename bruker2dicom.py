@@ -452,6 +452,10 @@ def bruker2dicom(folder_to_convert, master):
                     ds_temp.NumberOfAverages = str(parameters.get("VisuAcqNumberOfAverages"))
                     ds_temp.ImagingFrequency = parameters.get("VisuAcqImagingFrequency")
                     ds_temp.ImagedNucleus = parameters.get("VisuAcqImagedNucleus")
+                    z1 = parameters.get("VisuCorePosition")[0]
+                    z2 = parameters.get("VisuCorePosition")[1]
+                    spacing = abs(z1)-abs(z2)
+                    ds_temp.SpacingBetweenSlices = round(spacing[2],1)
                     ds_temp.NumberOfPhaseEncodingSteps = parameters.get("VisuAcqPhaseEncSteps")
                     ds_temp.EchoTrainLength = parameters.get("VisuAcqEchoTrainLength")
                     ds_temp.EchoTraiLength = parameters.get("VisuAcqEchoTrainLength")

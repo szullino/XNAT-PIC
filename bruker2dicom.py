@@ -136,7 +136,8 @@ def bruker2dicom(folder_to_convert, master):
             file_meta = Dataset()
             file_meta.MediaStorageSOPClassUID = "1.2.840.10008.5.1.4.1.1.4"
             file_meta.MediaStorageSOPInstanceUID = parameters.get("VisuUid")
-            file_meta.ImplementationClassUID = "11.2.276.0.7230010.3.0.3.5.3"
+            file_meta.ImplementationClassUID = "1.2.276.0.7230010.3.0.3.5.3"
+            file_meta.ImplementationVersionName = 'OFFIS_DCMTK_353'
 
             # Create the FileDataset instance (initially no data elements, but file_meta supplied)
             ds = FileDataset(filename_little_endian, {}, file_meta=file_meta, preamble=b"\0" * 128)
@@ -320,7 +321,8 @@ def bruker2dicom(folder_to_convert, master):
                     file_meta_temp = Dataset()
                     file_meta_temp.MediaStorageSOPClassUID = "1.2.840.10008.5.1.4.1.1.4"
                     file_meta_temp.MediaStorageSOPInstanceUID = parameters.get("VisuUid") + ".%s" % (k)
-                    file_meta_temp.ImplementationClassUID = "11.2.276.0.7230010.3.0.3.5.3"
+                    file_meta_temp.ImplementationClassUID = "1.2.276.0.7230010.3.0.3.5.3"
+                    file_meta_temp.ImplementationVersionName = 'OFFIS_DCMTK_353'
 
                     # Create the FileDataset instance (initially no data elements, but file_meta supplied)
                     ds_temp = FileDataset(filename_little_endian, {}, file_meta=file_meta_temp, preamble=b"\0" * 128)
@@ -445,7 +447,7 @@ def bruker2dicom(folder_to_convert, master):
                         ds_temp.EchoTime=str(np.array(echo_time,dtype=float)[k])                           
                     else:
                         ds_temp.EchoTime=parameters.get("VisuAcqEchoTime") 
-                          
+
                     ds_temp.AcquisitionDuration=parameters.get("VisuAcqScanTime") 
                     ds_temp.NumberOfAverages = str(parameters.get("VisuAcqNumberOfAverages"))
                     ds_temp.ImagingFrequency = parameters.get("VisuAcqImagingFrequency")

@@ -52,7 +52,7 @@ class xnat_pic_gui(tk.Frame):
             self.root.screenwidth=self.root.winfo_screenwidth()
             self.root.screenheight=self.root.winfo_screenheight()
 
-        self.root.title("XNAT Preclinical")
+        self.root.title("XNAT-PIC")
         self.root.resizable(False, False)
         self.root.width = 650
         self.root.height = 100
@@ -74,31 +74,31 @@ class xnat_pic_gui(tk.Frame):
 
         self.label_bruker_dicom = tk.Label(
             self.frame_labels,
-            text="  If you want to convert your images from Bruker to Dicom format:",
+            text="  Convert your images from Bruker to DICOM format:",
             anchor="w",
         )
         self.label_bruker_dicom.pack(anchor="w", pady=3)
         self.label_aspect_dicom = tk.Label(
             self.frame_labels,
-            text="  If you want to convert your images from Aspect to Dicom format:",
+            text="  Convert your images from Aspect to DICOM format:",
             anchor="w",
         )
         self.label_aspect_dicom.pack(anchor="w", pady=8)
         self.label_dicom_uploader = tk.Label(
             self.frame_labels,
-            text="  If you want to upload your Dicom images to XNAT:",
+            text="  Upload your DICOM images to XNAT:",
             anchor="w",
         )
         self.label_dicom_uploader.pack(anchor="w", pady=7)
 
         self.button1 = tk.Button(
-            self.frame_buttons, text="Bruker to Dicom  ", command=partial(self.bruker2dicom_conversion,self))
+            self.frame_buttons, text="Bruker2DICOM  ", command=partial(self.bruker2dicom_conversion,self))
 
         self.button1.pack(padx=10, pady=0)
-        self.button2 = tk.Button(self.frame_buttons, text="Aspect to Dicom  ")
+        self.button2 = tk.Button(self.frame_buttons, text="Aspect2DICOM ")
         self.button2.pack(padx=10, pady=1)
         self.button3 = tk.Button(
-            self.frame_buttons, text="Dicom Uploader ", command=partial(self.xnat_dcm_uploader,self)
+            self.frame_buttons, text="DICOM Uploader ", command=partial(self.xnat_dcm_uploader,self)
         )
         self.button3.pack(padx=10, pady=1)
 
@@ -148,7 +148,7 @@ class xnat_pic_gui(tk.Frame):
                 master.root.deiconify()
 
                 master.root.update()
-                master.root.title("Bruker To Dicom")
+                master.root.title("Bruker2DICOM")
                 head, tail = os.path.split(folder_to_convert)
                 project_foldername = tail + "_dcm"
                 dst = os.path.join(head, project_foldername)
@@ -183,7 +183,7 @@ class xnat_pic_gui(tk.Frame):
                 remove_empty_dirs(dst)
 
                 answer = messagebox.askyesno(
-                    "Bruker2Dicom", "Do you want to upload your project to XNAT?"
+                    "Bruker2DICOM", "Do you want to upload your project to XNAT?"
                 )
                 # self.frame_main.destroy()
                 if answer is True and os.path.isdir(dst) == True:

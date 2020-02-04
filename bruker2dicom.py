@@ -559,7 +559,7 @@ def bruker2dicom(folder_to_convert, master):
                             scan_time = scan_time + scan_time_step
                             for kk in range(0,step):
                                 vect4.append(scan_time)                            
-                    ds_temp.TriggerTime = np.array(vect4)[k]
+                        ds_temp.TriggerTime = np.array(vect4)[k]
 
                     # DWI acquisition
                     if "diffusion" in ds_temp.ProtocolName:

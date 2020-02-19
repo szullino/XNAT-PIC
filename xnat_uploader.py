@@ -123,28 +123,19 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
             root = tk.Tk()
             root.withdraw()
             root.attributes("-topmost", True)
-            bruker_folder = filedialog.askdirectory(parent=root,initialdir="/home/xnat/Documents/Scan_XNAT",title='Please select Bruker directory')
+            bruker_folder = filedialog.askdirectory(parent=root,initialdir="/home/xnat/Documents/",title='Please select Bruker directory')
             print(bruker_folder)
             session = xnat.connect(address, user, psw)
             rsc_label = 'bruker_data'
             project = session.classes.ProjectData(name=project_id, parent=session)
-            resource = session.classes.ResourceCatalog(parent=project, label=rsc_label)
-            try:
-                zip_bruker = shutil.make_archive(os.path.basename(bruker_folder), 'zip', bruker_folder)
-            except OSError:
-                pass
+            resource = session.classes.ResourceCatalog(parent=project, label=rsc_label)          
+            zip_bruker = shutil.make_archive(os.path.basename(bruker_folder), 'zip', bruker_folder)
+            print(zip_bruker)
             resource.upload(zip_bruker, project_id, overwrite=True, extract=True) 
             print('Uploaded')
-            #os.remove(zip_bruker)
-            
+            os.remove(zip_bruker)           
             session.disconnect()
-#            except Exception as err:
-#                    messagebox.showerror("XNAT Uploader", err)
-#                    exc_type, exc_value, exc_traceback = sys.exc_info()
-#                    traceback.print_tb(exc_traceback)
-#                    session.disconnect()
-#                    sys.exit(1)
-        #
+    
 
         ########
         messagebox.showinfo(
@@ -153,7 +144,9 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
 
         os._exit(0)
 
-    except Exception as error:
-        messagebox.showerror("XNAT Uploader", error)
-        sys.exit(1)
-        #os._exit(1)
+    except Exception as err:
+        messagebox.showerror("XNAT Uploader", err)
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        traceback.print_tb(exc_traceback)
+        session.disconnect()
+        sys.exit(1)   

@@ -50,12 +50,9 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
             depth = root[len(path) :].count(os.path.sep)
             if subject_depth == depth:
                 for subject_dir in dirs:
-                    #subject_dir = "_".join(subject_dir.split('.')) 
-                    #print("subject dir %s" % subject_dir)
                     path = root
                     custom_vars = []
                     custom_values = []
-
                     for x in range(0, num_cust_vars):
                         custom_values.append(os.path.basename(path))
                         path = os.path.dirname(path)
@@ -66,16 +63,16 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                     file_list = glob(os.path.join(root, subject_dir) + "/*/*")
                     try:
                         ds = pydicom.dcmread(file_list[0])
-                        subject_dir = "_".join(subject_dir.split('.')) #subject id changed from .xyz to _xyz
+                        subject_id = "_".join(subject_dir.split('.')) #subject id changed from .xyz to _xyz
 
                         if ds.StudyDate != "" and ds.StudyTime != "":
                             experiment_id = (
-                                subject_dir + "_" + ds.StudyDate + "_" + ds.StudyTime
+                                subject_id + "_" + ds.StudyDate + "_" + ds.StudyTime
                             )
 
                         else:
                             experiment_id = (
-                                subject_dir
+                                subject_id
                                 + "_"
                                 + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
                             )
@@ -83,23 +80,23 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                             experiment_id += "_" + var
                         try:
                             with xnat.connect(address, user, psw) as session:
-                                zip_dst = shutil.make_archive(subject_dir, "zip", root)
+                                zip_dst = shutil.make_archive(subject_id, "zip", os.path.join(root, subject_dir))
                                 project = session.classes.ProjectData(
                                     name=project_id, parent=session
                                 )
                                 subject = session.classes.SubjectData(
-                                    parent=project, label=subject_dir
+                                    parent=project, label=subject_id
                                 )
                                 session.services.import_(
                                     zip_dst,
                                     overwrite="none",
                                     project=project_id,
-                                    subject=subject_dir,
+                                    subject=subject_id,
                                     experiment=experiment_id,
                                 )
-                                subject = project.subjects[subject_dir]
+                                subject = project.subjects[subject_id]
                                 ########
-                                exp = project.subjects[subject_dir].experiments[
+                                exp = project.subjects[subject_id].experiments[
                                     experiment_id
                                 ]
                                 ########

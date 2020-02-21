@@ -7,7 +7,8 @@ Created on Tue Apr 30 15:36:46 2019
 """
 from tkinter import messagebox
 import os, re, glob
-
+import sys
+import traceback
 
 def list_cust_vars(folder):
     path = os.path.normpath(folder)
@@ -15,12 +16,12 @@ def list_cust_vars(folder):
     flag = 1
     for root, dirs, files in sorted(os.walk(path, topdown=True)):
         depth = root[len(path) :].count(os.path.sep)
-        # print(os.path.join(path,root))
-        # print(files)
+        #print(os.path.join(path,root))
+        #print(files)
         if files != []:
             for file in files:
-                # print("Nome file: %s" %file)
-                # print(file)
+                #print("Nome file: %s" %file)
+                #print(file)
                 if re.match(
                     "([a-z]|[A-Z]|[0-9])*.dcm$", file
                 ):  # check if every file inside that folder is dicom
@@ -55,7 +56,11 @@ def list_cust_vars(folder):
                 # dirs[:]=[]
     except Exception as err:
         messagebox.showerror("Error", "No Dicom files found in the subdirectories!")
-        os._exit(0)
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        traceback.print_tb(exc_traceback)
+        session.disconnect()
+        sys.exit(1)   
+        
     return custom_vars, custom_values
 
 

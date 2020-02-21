@@ -35,12 +35,12 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
             depth = root[len(path) :].count(os.path.sep)
 
             for file in files:
-                if re.match("([a-z]|[A-Z]|[0-9])*.dcm$", file):
+                if re.match("([^^]|[a-z]|[A-Z]|[0-9])*.dcm$", file):
                     flag = flag & 1
                 else:
                     flag = flag & 0
             if flag == 1:
-                subject_depth = depth - 2
+                subject_depth = depth - 3
                 if subject_depth < 0:
                     subject_depth = 0
                 del dirs
@@ -61,6 +61,7 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                     custom_vars = custom_vars[::-1]
                     custom_values = custom_values[::-1]
                     file_list = glob(os.path.join(root, subject_dir) + "/*/*")
+                    print(file_list[0])
                     try:
                         ds = pydicom.dcmread(file_list[0])
                         subject_id = "_".join(subject_dir.split('.')) #subject id changed from .xyz to _xyz
@@ -113,10 +114,12 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                             messagebox.showerror("XNAT Uploader", e)
                             exc_type, exc_value, exc_traceback = sys.exc_info()
                             traceback.print_tb(exc_traceback)
-                            session.disconnect()
                             sys.exit(1)
                     except Exception as errr:
-                        messagebox.showerror("XNAT Uploader", errr)
+                        messagebox.showerror("XNAT Uploader??", errr)
+                        exc_type, exc_value, exc_traceback = sys.exc_info()
+                        traceback.print_tb(exc_traceback)
+                        sys.exit(1)
 
         answer = messagebox.askyesno(
             "Bruker2Dicom", "Do you want to upload your Bruker data to XNAT?"

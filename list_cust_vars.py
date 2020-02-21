@@ -39,6 +39,8 @@ def list_cust_vars(folder):
     try:
         for root, dirs, _ in sorted(os.walk(path, topdown=True)):
             depth = root[len(path) :].count(os.path.sep)
+            print(depth)
+            print(subject_depth)
             if subject_depth == depth:
                 path = root
 
@@ -55,10 +57,9 @@ def list_cust_vars(folder):
                 break
                 # dirs[:]=[]
     except Exception as err:
-        messagebox.showerror("Error", "No Dicom files found in the subdirectories!")
+        messagebox.showerror("Error", err)
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_tb(exc_traceback)
-        session.disconnect()
         sys.exit(1)   
         
     return custom_vars, custom_values

@@ -20,17 +20,16 @@ def list_cust_vars(folder):
         #print(files)
         if files != []:
             for file in files:
-                #print("Nome file: %s" %file)
+                print("Nome file: %s" %file)
                 #print(file)
-                if re.match(
-                    "([a-z]|[A-Z]|[0-9])*.dcm$", file
-                ):  # check if every file inside that folder is dicom
+                if re.match("([^^]|[a-z]|[A-Z]|[0-9])*.dcm$", file):  # check if every file inside that folder is dicom
                     flag = flag & 1
+                    print('yes')
                 else:
                     flag = flag & 0
 
             if flag == 1:  ## I FOUND THE SUBJECT DEPTH
-                subject_depth = depth - 2
+                subject_depth = depth - 3
                 if subject_depth < 0:
                     subject_depth = 0
                 break
@@ -39,8 +38,6 @@ def list_cust_vars(folder):
     try:
         for root, dirs, _ in sorted(os.walk(path, topdown=True)):
             depth = root[len(path) :].count(os.path.sep)
-            print(depth)
-            print(subject_depth)
             if subject_depth == depth:
                 path = root
 
@@ -51,17 +48,21 @@ def list_cust_vars(folder):
                     path = os.path.dirname(path)
                     custom_vars.append(os.path.basename(path))
                     path = os.path.dirname(path)
+                    print(path)
+                    print(custom_vars)
+                    print(custom_values)
 
                 # custom_vars=custom_vars[::-1]    ## Il '-1' non prende lo '/'
                 # custom_values=custom_values[::-1]
                 break
                 # dirs[:]=[]
     except Exception as err:
-        messagebox.showerror("Error", err)
+        messagebox.showerror("List Custom Variables Error", err)
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_tb(exc_traceback)
         sys.exit(1)   
-        
+    
+
     return custom_vars, custom_values
 
 

@@ -181,6 +181,15 @@ class xnat_pic_gui(tk.Frame):
                 restore_raw_dirs(folder_to_convert)
                 # Remove empty directories
                 remove_empty_dirs(dst)
+                print(dst)
+                print(head)
+                dest = os.path.join(head,'MR')
+                print(dest)
+                os.mkdir(dest)
+                #os.mkdir('MR')
+                #cur_dir = os.getcwd()
+                
+
 
                 answer = messagebox.askyesno(
                     "Bruker2DICOM", "Do you want to upload your project to XNAT?"

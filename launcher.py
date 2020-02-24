@@ -181,21 +181,23 @@ class xnat_pic_gui(tk.Frame):
                 restore_raw_dirs(folder_to_convert)
                 # Remove empty directories
                 remove_empty_dirs(dst)
-                print(dst)
-                print(head)
-                dest = os.path.join(head,'MR')
-                print(dest)
-                os.mkdir(dest)
-                #os.mkdir('MR')
-                #cur_dir = os.getcwd()
                 
+                # Source path  
+                source = dst
+                  
+                # Destination path  
+                destination = os.path.join(head,'MR')
+                os.mkdir(destination)
 
+                # Move the content of  
+                # source to destination  
+                dest = shutil.move(source, destination)  
 
                 answer = messagebox.askyesno(
                     "Bruker2DICOM", "Do you want to upload your project to XNAT?"
                 )
                 # self.frame_main.destroy()
-                if answer is True and os.path.isdir(dst) == True:
+                if answer is True and os.path.isdir(dest) == True:
                     master.xnat_dcm_uploader(master,os.path.join(head,project_foldername))
                 else:
                     os._exit(0)
@@ -524,7 +526,7 @@ class xnat_pic_gui(tk.Frame):
             master.root.deiconify()
             head, tail = os.path.split(self.folder_to_upload)
             project_foldername = tail
-            dst = os.path.join(head, project_foldername)
+            dest = os.path.join(head, project_foldername)
             project_id = self.project
             ##############
             self.frame_three = tk.Frame(master.root)

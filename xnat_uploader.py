@@ -60,10 +60,11 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                         path = os.path.dirname(path)
                     custom_vars = custom_vars[::-1]
                     custom_values = custom_values[::-1]
-                    file_list = glob(os.path.join(root, subject_dir) + "/*/*")
-                    print(file_list[0])
+                    file_list = glob(os.path.join(root, subject_dir) + '/**/*.dcm', recursive=True)
+                    
                     try:
                         ds = pydicom.dcmread(file_list[0])
+                        print(file_list[0])
                         subject_id = "_".join(subject_dir.split('.')) #subject id changed from .xyz to _xyz
                         if '.' in ds.StudyTime:                           
                             ds.StudyTime = ds.StudyTime.split('.',1)[0]

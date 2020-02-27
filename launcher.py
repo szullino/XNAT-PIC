@@ -186,12 +186,18 @@ class xnat_pic_gui(tk.Frame):
                 source = dst
                   
                 # Destination path  
+                
                 destination = os.path.join(head,'MR')
+
                 os.mkdir(destination)
 
                 # Move the content of  
                 # source to destination  
-                dest = shutil.move(source, destination)  
+                folder = os.listdir(source)
+                for f in folder:
+                    shutil.move(os.path.join(source,f), destination)
+                dest = shutil.move(destination, source) 
+                
 
                 answer = messagebox.askyesno(
                     "Bruker2DICOM", "Do you want to upload your project to XNAT?"
@@ -526,7 +532,7 @@ class xnat_pic_gui(tk.Frame):
             master.root.deiconify()
             head, tail = os.path.split(self.folder_to_upload)
             project_foldername = tail
-            dest = os.path.join(head, project_foldername)
+            dst = os.path.join(head, project_foldername)
             project_id = self.project
             ##############
             self.frame_three = tk.Frame(master.root)

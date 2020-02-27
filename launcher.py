@@ -150,7 +150,7 @@ class xnat_pic_gui(tk.Frame):
                 master.root.update()
                 master.root.title("Bruker2DICOM")
                 head, tail = os.path.split(folder_to_convert)
-                project_foldername = tail + "_dcm"
+                project_foldername = tail.split('.',1)[0] + "_dcm"
                 dst = os.path.join(head, project_foldername)
 
                 master._inprogress("Conversion in progress")

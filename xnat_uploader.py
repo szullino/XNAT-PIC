@@ -60,7 +60,7 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                         path = os.path.dirname(path)
                     custom_vars = custom_vars[::-1]
                     custom_values = custom_values[::-1]
-                    file_list = glob(os.path.join(root, subject_dir) + '/**/*.dcm', recursive=True)
+                    file_list = sorted(glob(os.path.join(root, subject_dir) + '/**/*.dcm', recursive=True))
                     
                     try:
                         ds = pydicom.dcmread(file_list[0])

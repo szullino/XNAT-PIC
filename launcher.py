@@ -150,7 +150,7 @@ class xnat_pic_gui(tk.Frame):
                 master.root.update()
                 master.root.title("Bruker2DICOM")
                 head, tail = os.path.split(folder_to_convert)
-                project_foldername = tail + "_dcm"
+                project_foldername = tail.split('.',1)[0] + "_dcm"
                 dst = os.path.join(head, project_foldername)
 
                 master._inprogress("Conversion in progress")
@@ -181,12 +181,29 @@ class xnat_pic_gui(tk.Frame):
                 restore_raw_dirs(folder_to_convert)
                 # Remove empty directories
                 remove_empty_dirs(dst)
+                
+                # Source path  
+                source = dst
+                  
+                # Destination path  
+                
+                destination = os.path.join(head,'MR')
+
+                os.mkdir(destination)
+
+                # Move the content of  
+                # source to destination  
+                folder = os.listdir(source)
+                for f in folder:
+                    shutil.move(os.path.join(source,f), destination)
+                dest = shutil.move(destination, source) 
+                
 
                 answer = messagebox.askyesno(
                     "Bruker2DICOM", "Do you want to upload your project to XNAT?"
                 )
                 # self.frame_main.destroy()
-                if answer is True and os.path.isdir(dst) == True:
+                if answer is True and os.path.isdir(dest) == True:
                     master.xnat_dcm_uploader(master,os.path.join(head,project_foldername))
                 else:
                     os._exit(0)

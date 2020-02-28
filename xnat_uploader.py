@@ -59,67 +59,69 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                         custom_vars.append(os.path.basename(path))
                         path = os.path.dirname(path)
                     custom_vars = custom_vars[::-1]
-                    custom_values = custom_values[::-1]
-                    file_list = sorted(glob(os.path.join(root, subject_dir) + '/**/*.dcm', recursive=True))
-                    
-                    try:
-                        ds = pydicom.dcmread(file_list[0])
-                        subject_id = "_".join(subject_dir.split('.')) # remove .xyz in subject_id
-                        if '.' in ds.StudyTime:                           
-                            ds.StudyTime = ds.StudyTime.split('.',1)[0]
-                        ds.StudyTime = "_".join(ds.StudyTime.split('.'))
-                        ds.StudyDate = "_".join(ds.StudyDate.split('.'))
-                        if ds.StudyDate != "" and ds.StudyTime != "":
-                            experiment_id = (
-                                subject_id + "_" + ds.StudyDate + "_" + ds.StudyTime
-                            )
-
-                        else:
-                            experiment_id = (
-                                subject_id
-                                + "_"
-                                + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                            )
-                        for var in custom_values:
-                            experiment_id += "_" + var
+                    custom_values = custom_values[::-1]                  
+                    folder_list = sorted(glob(os.path.join(root, subject_dir) + '/*/', recursive=True))
+                    for item in folder_list:
+                        print(item)
+                        file_list = sorted(glob(item + '/**/*.dcm', recursive=True))
+                        print(file_list[0])                   
                         try:
-                            with xnat.connect(address, user, psw) as session:
-                                zip_dst = shutil.make_archive(subject_id, "zip", os.path.join(root, subject_dir))
-                                project = session.classes.ProjectData(
+                            ds = pydicom.dcmread(file_list[0])
+                            subject_id = "_".join(subject_dir.split('.')) # remove .xyz in subject_id
+                            if '.' in ds.StudyTime:                           
+                                ds.StudyTime = ds.StudyTime.split('.',1)[0]
+                            ds.StudyTime = "_".join(ds.StudyTime.split('.'))
+                            ds.StudyDate = "_".join(ds.StudyDate.split('.'))
+                            if ds.StudyDate != "" and ds.StudyTime != "":
+                                experiment_id = (
+                                    subject_id + "_" + ds.StudyDate + "_" + ds.StudyTime
+                                )
+    
+                            else:
+                                experiment_id = (
+                                    subject_id
+                                    + "_"
+                                    + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                                )
+                            for var in custom_values:
+                                experiment_id += "_" + var
+                            print(experiment_id)
+                            try:
+                                with xnat.connect(address, user, psw) as session:
+                                    zip_dst = shutil.make_archive(subject_id, "zip", item)
+                                    project = session.classes.ProjectData(
                                     name=project_id, parent=session
-                                )
-                                subject = session.classes.SubjectData(
-                                    parent=project, label=subject_id
-                                )
-                                session.services.import_(
-                                    zip_dst,
-                                    overwrite="none",
-                                    project=project_id,
-                                    subject=subject_id,
-                                    experiment=experiment_id,
-                                )
-                                subject = project.subjects[subject_id]
-                                ########
-                                exp = project.subjects[subject_id].experiments[
-                                    experiment_id
-                                ]
-                                ########
-                                for i, element in enumerate(custom_vars):
-                                    subject.fields[element] = custom_values[i]
-                                    exp.fields[element] = custom_values[i]
-                                os.remove(zip_dst)
-                        except Exception as e:
-#                            messagebox.showerror("XNAT Uploader error", e)
-#                            session.disconnect()
-                            messagebox.showerror("XNAT Uploader", e)
+                                    )
+                                    subject = session.classes.SubjectData(
+                                        parent=project, label=subject_id
+                                    )
+                                    session.services.import_(
+                                        zip_dst,
+                                        overwrite="none",
+                                        project=project_id,
+                                        subject=subject_id,
+                                        experiment=experiment_id,
+                                    )
+                                    subject = project.subjects[subject_id]
+                                    ########
+                                    exp = project.subjects[subject_id].experiments[
+                                        experiment_id
+                                    ]
+                                    ########
+                                    for i, element in enumerate(custom_vars):
+                                        subject.fields[element] = custom_values[i]
+                                        exp.fields[element] = custom_values[i]
+                                    os.remove(zip_dst)
+                            except Exception as e:
+                                messagebox.showerror("XNAT Uploader", e)
+                                exc_type, exc_value, exc_traceback = sys.exc_info()
+                                traceback.print_tb(exc_traceback)
+                                sys.exit(1)
+                        except Exception as errr:
+                            messagebox.showerror("XNAT Uploader", errr)
                             exc_type, exc_value, exc_traceback = sys.exc_info()
                             traceback.print_tb(exc_traceback)
                             sys.exit(1)
-                    except Exception as errr:
-                        messagebox.showerror("XNAT Uploader??", errr)
-                        exc_type, exc_value, exc_traceback = sys.exc_info()
-                        traceback.print_tb(exc_traceback)
-                        sys.exit(1)
 
         answer = messagebox.askyesno(
             "Bruker2Dicom", "Do you want to upload your Bruker data to XNAT?"

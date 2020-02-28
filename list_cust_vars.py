@@ -16,12 +16,9 @@ def list_cust_vars(folder):
     flag = 1
     for root, dirs, files in sorted(os.walk(path, topdown=True)):
         depth = root[len(path) :].count(os.path.sep)
-        #print(os.path.join(path,root))
-        #print(files)
         if files != []:
             for file in files:
                 #print("Nome file: %s" %file)
-                #print(file)
                 if re.match("([^^]|[a-z]|[A-Z]|[0-9])*.dcm$", file):  # check if every file inside that folder is dicom
                     flag = flag & 1
                 else:
@@ -47,9 +44,6 @@ def list_cust_vars(folder):
                     path = os.path.dirname(path)
                     custom_vars.append(os.path.basename(path))
                     path = os.path.dirname(path)
-                    print(path)
-                    print(custom_vars)
-                    print(custom_values)
 
                 # custom_vars=custom_vars[::-1]    ## Il '-1' non prende lo '/'
                 # custom_values=custom_values[::-1]
@@ -67,5 +61,4 @@ def list_cust_vars(folder):
 
 if __name__ == "__main__":
     values, vars = list_cust_vars("/home/xnat/Documents/Scan_XNAT/patients/DICOM/")
-    print(vars)
-    print(values)
+

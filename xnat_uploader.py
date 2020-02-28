@@ -64,8 +64,7 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                     
                     try:
                         ds = pydicom.dcmread(file_list[0])
-                        print(file_list[0])
-                        subject_id = "_".join(subject_dir.split('.')) #subject id changed from .xyz to _xyz
+                        subject_id = "_".join(subject_dir.split('.')) # remove .xyz in subject_id
                         if '.' in ds.StudyTime:                           
                             ds.StudyTime = ds.StudyTime.split('.',1)[0]
                         ds.StudyTime = "_".join(ds.StudyTime.split('.'))

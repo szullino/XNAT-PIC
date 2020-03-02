@@ -54,8 +54,8 @@ class xnat_pic_gui(tk.Frame):
 
         self.root.title("XNAT-PIC (University of Torino)")
         self.root.resizable(False, False)
-        self.root.width = 650
-        self.root.height = 100
+        self.root.width = 600
+        self.root.height = 150
         self.x = (int(self.root.screenwidth) - self.root.width) / 2
         self.y = (int(self.root.screenheight)- self.root.height) / 3
         self.root.geometry("%dx%d+%d+%d" % (self.root.width, self.root.height, self.x, self.y))
@@ -217,8 +217,8 @@ class xnat_pic_gui(tk.Frame):
             master.root.title("XNAT-PIC - DICOM Uploader")
             master.root.deiconify()
             master.frame_main.destroy()
-            master.root.width = 450
-            master.root.height = 155
+            master.root.width = 600
+            master.root.height = 150
             master.x = (int(master.root.screenwidth) - master.root.width) / 2
             master.y = (int(master.root.screenheight)- master.root.height) / 3
             master.root.geometry("%dx%d+%d+%d" % (master.root.width, master.root.height, master.x, master.y))
@@ -455,8 +455,8 @@ class xnat_pic_gui(tk.Frame):
             self.frame_two.grid()
             self.stack_frames.append(self.frame_two)
 
-            master.root.width = 455
-            master.root.height = 155
+            master.root.width = 600
+            master.root.height = 150
             master.x = (int(master.root.screenwidth) - master.root.width) / 2
             master.y = (int(master.root.screenheight)- master.root.height) / 3
             master.root.geometry("%dx%d+%d+%d" % (master.root.width, master.root.height, master.x, master.y))

@@ -19,7 +19,7 @@ def list_cust_vars(folder):
         if files != []:
             for file in files:
                 #print("Nome file: %s" %file)
-                if re.match("([^^]|[a-z]|[A-Z]|[0-9])*.dcm$", file):  # check if every file inside that folder is dicom
+                if re.match("([^^]|[a-z]|[A-Z]|[0-9])*$", file):  # match and find every single file inside that folder, no matter the name and the extension (but it has to be dicom mandatory)
                     flag = flag & 1
                 else:
                     flag = flag & 0

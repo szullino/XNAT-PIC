@@ -19,7 +19,9 @@ def list_cust_vars(folder):
         if files != []:
             for file in files:
                 #print("Nome file: %s" %file)
-                if re.match("([^^]|[a-z]|[A-Z]|[0-9])*$", file):  # match and find every single file inside that folder, no matter the name and the extension (but it has to be dicom mandatory)
+                # match and find every single file inside that folder, 
+                # no matter the name and the extension (but it has to be dicom mandatory)
+                if re.match("([^^]|[a-z]|[A-Z]|[0-9])*$", file):  
                     flag = flag & 1
                 else:
                     flag = flag & 0
@@ -60,5 +62,5 @@ def list_cust_vars(folder):
 
 
 if __name__ == "__main__":
-    values, vars = list_cust_vars("/home/xnat/Documents/Scan_XNAT/patients/DICOM/")
+    values, vars = list_cust_vars(os.path.expanduser("~"))
 

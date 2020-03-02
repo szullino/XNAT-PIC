@@ -130,7 +130,8 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
             root = tk.Tk()
             root.withdraw()
             root.attributes("-topmost", True)
-            bruker_folder = filedialog.askdirectory(parent=root,initialdir=os.path.expanduser("~"),title='Please select Bruker directory')
+            bruker_folder = filedialog.askdirectory(parent=root,initialdir=os.path.expanduser("~"),\
+                                                    title='Please select Bruker directory')
             print(bruker_folder)
             session = xnat.connect(address, user, psw)
             rsc_label = 'bruker_data'

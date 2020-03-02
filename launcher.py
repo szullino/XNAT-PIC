@@ -38,7 +38,8 @@ class xnat_pic_gui(tk.Frame):
         ### GET PRIMARY SCREEN RESOLUTION
         ### MADE FOR MULTISCREEN ENVIRONMENTS
         if (platform.system()=='Linux'):
-            cmd_show_screen_resolution = subprocess.Popen("xrandr --query | grep -oG 'primary [0-9]*x[0-9]*'",stdout=subprocess.PIPE, shell=True)
+            cmd_show_screen_resolution = subprocess.Popen("xrandr --query | grep -oG 'primary [0-9]*x[0-9]*'",\
+                                                          stdout=subprocess.PIPE, shell=True)
             screen_output =str(cmd_show_screen_resolution.communicate()).split()[1]
             self.root.screenwidth, self.root.screenheight = re.findall("[0-9]+",screen_output)
         ###
@@ -153,7 +154,9 @@ class xnat_pic_gui(tk.Frame):
                     master.progress.stop()
                     messagebox.showwarning(
                         "Destination folder already exists",
-                        "Destination folder %s already exists and it won't be overridden by a new conversion. If you want to proceed with the conversion please delete/move/rename the existing folder"
+                        "Destination folder %s already exists and it won't be overridden \
+                        by a new conversion. If you want to proceed with the conversion please \
+                        delete/move/rename the existing folder"
                         % dst,
                     )
                     os._exit(0)

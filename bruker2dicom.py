@@ -247,7 +247,8 @@ def bruker2dicom(folder_to_convert, master):
             ds.AcquisitionNumber = "1"
             ds.InstanceNumber = "1"
             ds.MRAcquisitionType = str(parameters.get("VisuCoreDim")) + "D"
-            ds.SoftwareVersions = (str(parameters.get("VisuCreator")) + " " + str(parameters.get("VisuCreatorVersion")))
+            ds.SoftwareVersions = (str(parameters.get("VisuCreator")) + " " + \
+                                   str(parameters.get("VisuCreatorVersion")))
             ds.ImagePositionPatient = list(map(str, parameters.get("VisuCorePosition")[0]))
             ds.ImageOrientationPatient = list(map(str, parameters.get("VisuCoreOrientation")[0][0:6]))
             ds.SliceLocation = list(map(str, parameters.get("VisuCorePosition")[0]))[2]
@@ -325,7 +326,8 @@ def bruker2dicom(folder_to_convert, master):
                     file_meta_temp.ImplementationVersionName = 'OFFIS_DCMTK_353'
 
                     # Create the FileDataset instance (initially no data elements, but file_meta supplied)
-                    ds_temp = FileDataset(filename_little_endian, {}, file_meta=file_meta_temp, preamble=b"\0" * 128)
+                    ds_temp = FileDataset(filename_little_endian, {}, file_meta=file_meta_temp, \
+                                          preamble=b"\0" * 128)
 
                     ds_temp.file_meta.TransferSyntaxUID = pydicom.uid.ExplicitVRLittleEndian
 

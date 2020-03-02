@@ -1,5 +1,5 @@
-#!/home/ictadmin/xnat/bin/python
-
+#!/home/xnat/anaconda3/envs/py3/bin/python3.7
+# -*- coding: utf-8 -*-
 """
 Created on Mar 1, 2019
 
@@ -113,25 +113,25 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                                         exp.fields[element] = custom_values[i]
                                     os.remove(zip_dst)
                             except Exception as e:
-                                messagebox.showerror("XNAT Uploader", e)
+                                messagebox.showerror("XNAT-PIC - DICOM Uploader", e)
                                 exc_type, exc_value, exc_traceback = sys.exc_info()
                                 traceback.print_tb(exc_traceback)
                                 sys.exit(1)
                         except Exception as errr:
-                            messagebox.showerror("XNAT Uploader", errr)
+                            messagebox.showerror("XNAT-PIC - DICOM Uploader", errr)
                             exc_type, exc_value, exc_traceback = sys.exc_info()
                             traceback.print_tb(exc_traceback)
                             sys.exit(1)
 
         answer = messagebox.askyesno(
-            "Bruker2Dicom", "Do you want to upload your Bruker data to XNAT?"
+            "XNAT-PIC - Bruker2DICOM", "Do you want to upload your Bruker data to XNAT?"
         )
                 
         if answer is True:
             root = tk.Tk()
             root.withdraw()
             root.attributes("-topmost", True)
-            bruker_folder = filedialog.askdirectory(parent=root,initialdir="/home/xnat/Documents/",title='Please select Bruker directory')
+            bruker_folder = filedialog.askdirectory(parent=root,initialdir=os.path.expanduser("~"),title='Please select Bruker directory')
             print(bruker_folder)
             session = xnat.connect(address, user, psw)
             rsc_label = 'bruker_data'
@@ -147,13 +147,13 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
 
         ########
         messagebox.showinfo(
-            "Bruker2Dicom", "DICOM images have been successfully imported to XNAT!"
+            "XNAT-PIC - DICOM Uploader", "DICOM images have been successfully imported to XNAT!"
         )
 
         os._exit(0)
 
     except Exception as err:
-        messagebox.showerror("XNAT Uploader", err)
+        messagebox.showerror("XNAT-PIC - DICOM Uploader", err)
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_tb(exc_traceback)
         session.disconnect()

@@ -52,7 +52,7 @@ class xnat_pic_gui(tk.Frame):
             self.root.screenwidth=self.root.winfo_screenwidth()
             self.root.screenheight=self.root.winfo_screenheight()
 
-        self.root.title("XNAT-PIC")
+        self.root.title("XNAT-PIC (University of Torino)")
         self.root.resizable(False, False)
         self.root.width = 650
         self.root.height = 100
@@ -139,7 +139,7 @@ class xnat_pic_gui(tk.Frame):
 
                 folder_to_convert = filedialog.askdirectory(
                     parent=master.root,
-                    initialdir=os.getcwd(),
+                    initialdir=os.path.expanduser("~"),
                     title="Please select directory",
                 )
 
@@ -200,7 +200,7 @@ class xnat_pic_gui(tk.Frame):
                 
 
                 answer = messagebox.askyesno(
-                    "Bruker2DICOM", "Do you want to upload your project to XNAT?"
+                    "XNAT-PIC - DICOM Uploader", "Do you want to upload your project to XNAT?"
                 )
                 # self.frame_main.destroy()
                 if answer is True and os.path.isdir(dest) == True:
@@ -211,10 +211,10 @@ class xnat_pic_gui(tk.Frame):
 
     class xnat_dcm_uploader():
 
-        def __init__(self, master,folder_converted=""):
-            self.folder_converted = folder_converted
+        def __init__(self, master,home=""):
+            self.home = os.path.expanduser("~")
             master.root.update()
-            master.root.title("Dicom Uploader")
+            master.root.title("XNAT-PIC - DICOM Uploader")
             master.root.deiconify()
             master.frame_main.destroy()
             master.root.width = 450
@@ -466,7 +466,7 @@ class xnat_pic_gui(tk.Frame):
                 self.frame_two, text="  New project", anchor="w", state="disabled"
             )
             self.label_choose_prj = tk.Label(
-                self.frame_two, text="  Choose existing project from list", anchor="w"
+                self.frame_two, text="  Select project from XNAT", anchor="w"
             )
             self.label_choose_prj.grid(row=2, column=0)
             self.label_prjname.grid(row=0, column=0, sticky="W", columnspan=1)
@@ -524,8 +524,8 @@ class xnat_pic_gui(tk.Frame):
 
             self.folder_to_upload = filedialog.askdirectory(
                 parent=master.root,
-                initialdir=self.folder_converted,
-                title="Please select directory",
+                initialdir=self.home,
+                title="XNAT-PIC: Please select project directory (DICOM only)",
             )
             if self.folder_to_upload==():
                 os._exit(1)
@@ -541,7 +541,7 @@ class xnat_pic_gui(tk.Frame):
 
             self.label_descr = tk.Label(
                 self.frame_three,
-                text="Choose the number of custom variables \n(from 0 to 3)",
+                text="Type the number of custom variables \n(from 0 to 3)",
                 anchor="w",
                 state="normal",
             )
@@ -556,7 +556,7 @@ class xnat_pic_gui(tk.Frame):
 
             self.btn_add = tk.Button(
                 self.frame_three,
-                text="Show custom variables",
+                text="List custom variables",
                 command=self.display_cust_vars_list,
                 state="disabled",
             )
@@ -591,11 +591,11 @@ class xnat_pic_gui(tk.Frame):
             self.frame_cst_vars_values.grid(row=j, column=1)
             # self.cust_vars=self.cust_vars[::-1]
             tk.Label(
-                self.frame_cst_vars, text="Custom Variable", relief="raised", borderwidth=2
+                self.frame_cst_vars, text="Custom Variables", relief="raised", borderwidth=2
             ).grid(row=j, column=0)
             tk.Label(
                 self.frame_cst_vars,
-                text="Possible Custom Value",
+                text="Values",
                 relief="raised",
                 borderwidth=2,
             ).grid(row=j, column=1)

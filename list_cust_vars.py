@@ -3,10 +3,10 @@
 """
 Created on Tue Apr 30 15:36:46 2019
 
-@author: xnat
+@author: Sara Zullino, Alessandro Paglialonga
 """
 from tkinter import messagebox
-import os, re, glob
+import os, re
 import sys
 import traceback
 

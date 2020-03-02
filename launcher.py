@@ -1,9 +1,9 @@
-#!/home/ictadmin/Documents/virtualenvs/xnat/bin/python
+#!/home/xnat/anaconda3/envs/py3/bin/python3.7
 # -*- coding: utf-8 -*-
 """
 Created on Fri Mar 29 17:25:38 2019
 
-@author: xnat
+@author: Sara Zullino, Alessandro Paglialonga
 """
 
 import xnat
@@ -19,16 +19,11 @@ from restore_raw_dirs import restore_raw_dirs
 from shutil import copytree
 from functools import partial
 from xnat_uploader import xnat_uploader
-from glob import glob
 import platform
 import pyAesCrypt
 from list_cust_vars import list_cust_vars
 import subprocess
-import tkinter as tk
 from tkinter import ttk
-from urllib3.packages.six import _meth_self
-import sys
-
 
 bufferSize = 64 * 1024
 password = "worstsymmetricpasswordever19"

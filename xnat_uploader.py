@@ -3,14 +3,13 @@
 """
 Created on Mar 1, 2019
 
-@author: xnat
+@author: Sara Zullino, Alessandro Paglialonga
 """
 import shutil, os
 import xnat
 from glob import glob
 from tkinter import messagebox
 import re
-from setuptools.unicode_utils import try_encode
 import datetime
 import pydicom
 import sys

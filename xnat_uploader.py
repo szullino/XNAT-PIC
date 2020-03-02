@@ -35,7 +35,7 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
             depth = root[len(path) :].count(os.path.sep)
 
             for file in files:
-                if re.match("([^^]|[a-z]|[A-Z]|[0-9])*.dcm$", file):
+                if re.match("([^^]|[a-z]|[A-Z]|[0-9])*$", file):
                     flag = flag & 1
                 else:
                     flag = flag & 0
@@ -63,7 +63,7 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                     folder_list = sorted(glob(os.path.join(root, subject_dir) + '/*/', recursive=True))
                     for item in folder_list:
                         print(item)
-                        file_list = sorted(glob(item + '/**/*.dcm', recursive=True))
+                        file_list = sorted(glob(item + '/*/*', recursive=True))
                         print(file_list[0])                   
                         try:
                             ds = pydicom.dcmread(file_list[0])

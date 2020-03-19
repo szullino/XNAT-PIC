@@ -7,18 +7,23 @@ Created on Tue Mar  3 15:23:32 2020
 """
 
 import os, re
-from time import perf_counter 
 import numpy as np
 import datetime
 import dateutil.parser
 from pydicom.dataset import Dataset, FileDataset
 import pydicom.uid
-from read_visu_pars import read_parameters
+from read_visupars import read_visupars_parameters
 from cest_dict import add_cest_dict
 from read_method import read_method_parameters
+try:
+    import tkinter as tk  # python v3
+    from tkinter import messagebox
 
-def bruker2dicom_pv360(folder_to_convert):
-    start = perf_counter()
+except ImportError:
+    import Tkinter as tk  # python v2
+    from Tkinter import *
+
+def bruker2dicom_pv360(folder_to_convert, master):
     
     #Tag entries for cest acquisition
     add_cest_dict()        
@@ -45,13 +50,13 @@ def bruker2dicom_pv360(folder_to_convert):
                 acqp_file = os.path.abspath(os.path.join(os.path.dirname(res),f))
                 if os.path.exists(dseq_file):
                     with open(visu_pars_file, 'r'):
-                        parameters = read_parameters(visu_pars_file)
+                        parameters = read_visupars_parameters(visu_pars_file)
                     with open(reco_file, 'r'):
                         reco_parameters = read_method_parameters(reco_file)
                     with open(method_file, 'r'):
                         method_parameters = read_method_parameters(method_file)
                     with open(acqp_file, 'r'):
-                        acqp_parameters = read_parameters(acqp_file)                    
+                        acqp_parameters = read_visupars_parameters(acqp_file)                    
                 else:
                     break
                                                            
@@ -751,10 +756,20 @@ def bruker2dicom_pv360(folder_to_convert):
                         k +=1    
                         ii +=1
                         
-    print('\n - - - DICOM files have been successfully created! - - - ')
-                                    
-    end = perf_counter()
-    print("\n * * * Elapsed bruker2dicom conversion time: ",(end - start), 'seconds * * * ')
+    if parameters:
+        # if "parameters" in globals() or "parameters" in locals():
+        master.progress.stop()
+        master.root.withdraw()
+        #messagebox.showinfo("Success!", "DICOM files have been successfully created!")
+    else:
+        master.progress.stop()
+        master.root.withdraw()
+        messagebox.showerror(
+            "Error!",
+            "Bruker files have not been found in the chosen folder/subfolders!",
+        )
+        os._exit(1)
+
     
     return
 

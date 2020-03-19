@@ -25,6 +25,8 @@ from list_cust_vars import list_cust_vars
 import subprocess
 from tkinter import ttk
 from read_visupars import read_visupars_parameters
+import traceback
+import sys
 
 bufferSize = 64 * 1024
 password = "worstsymmetricpasswordever19"
@@ -169,23 +171,40 @@ class xnat_pic_gui(tk.Frame):
 
                 if os.path.exists(visupars_file):
                     print("yes")
-                    with open(visupars_file, "r"):
-                        parameters = read_visupars_parameters(visupars_file)
-                        PV_version = parameters.get("VisuCreatorVersion")
-                        print(PV_version)
-                        del parameters
+                    try:
+                        with open(visupars_file, "r"):
+                            parameters = read_visupars_parameters(visupars_file)
+                            PV_version = parameters.get("VisuCreatorVersion")
+                            print(PV_version)
+                            del parameters
+                    except Exception as e:
+                        messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)
+                        exc_type, exc_value, exc_traceback = sys.exc_info()
+                        traceback.print_tb(exc_traceback)
+                        sys.exit(1)
                 
                 ####################
                 if PV_version == "360.1.1":
-                    print("ciaone")
+                    try:                     
+                        print("ciaone")
+                    except Exception as e:
+                        messagebox.showerror("XNAT-PIC - Bruker2DICOM", e)
+                        exc_type, exc_value, exc_traceback = sys.exc_info()
+                        traceback.print_tb(exc_traceback)
+                        sys.exit(1)                
                 else:
-                    print("None")
-                    bruker2dicom(folder_to_convert, master)
+                    try:
+                        bruker2dicom(folder_to_convert, master)
+                    except Exception as e:
+                        messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)
+                        exc_type, exc_value, exc_traceback = sys.exc_info()
+                        traceback.print_tb(exc_traceback)
+                        sys.exit(1)
                 ####################
 
-                ###################
+                ####################
                 master.progress.stop()
-                ###################
+                ####################
 
                 # Copy the directory tree while keeping DICOM files only
                 try:

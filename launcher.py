@@ -170,12 +170,10 @@ class xnat_pic_gui(tk.Frame):
                 print(visupars_file)
 
                 if os.path.exists(visupars_file):
-                    print("yes")
                     try:
                         with open(visupars_file, "r"):
                             parameters = read_visupars_parameters(visupars_file)
                             PV_version = parameters.get("VisuCreatorVersion")
-                            print(PV_version)
                             del parameters
                     except Exception as e:
                         messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)

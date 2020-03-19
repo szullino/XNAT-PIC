@@ -24,6 +24,7 @@ import pyAesCrypt
 from list_cust_vars import list_cust_vars
 import subprocess
 from tkinter import ttk
+from read_visupars import read_visupars_parameters
 
 bufferSize = 64 * 1024
 password = "worstsymmetricpasswordever19"
@@ -148,6 +149,16 @@ class xnat_pic_gui(tk.Frame):
                 head, tail = os.path.split(folder_to_convert)
                 project_foldername = tail.split('.',1)[0] + "_dcm"
                 dst = os.path.join(head, project_foldername)
+
+                print(folder_to_convert)
+                visupars_file = os.path.abspath(os.path.join(folder_to_convert, "1", "visu_pars"))
+                print(visupars_file)
+
+                if os.path.exists(visupars_file):
+                    print("yes")
+                    with open(visupars_file, "r"):
+                        parameters = read_visupars_parameters(visupars_file)
+                        print(parameters.get("VisuCreatorVersion"))
 
                 master._inprogress("Conversion in progress")
                 if os.path.isdir(dst):

@@ -150,16 +150,6 @@ class xnat_pic_gui(tk.Frame):
                 project_foldername = tail.split('.',1)[0] + "_dcm"
                 dst = os.path.join(head, project_foldername)
 
-                print(folder_to_convert)
-                visupars_file = os.path.abspath(os.path.join(folder_to_convert, "1", "visu_pars"))
-                print(visupars_file)
-
-                if os.path.exists(visupars_file):
-                    print("yes")
-                    with open(visupars_file, "r"):
-                        parameters = read_visupars_parameters(visupars_file)
-                        print(parameters.get("VisuCreatorVersion"))
-
                 master._inprogress("Conversion in progress")
                 if os.path.isdir(dst):
                     master.progress.stop()
@@ -171,8 +161,26 @@ class xnat_pic_gui(tk.Frame):
                         % dst,
                     )
                     os._exit(0)
+
+                
+                print(folder_to_convert)
+                visupars_file = os.path.abspath(os.path.join(folder_to_convert, "1/pdata/1/visu_pars"))
+                print(visupars_file)
+
+                if os.path.exists(visupars_file):
+                    print("yes")
+                    with open(visupars_file, "r"):
+                        parameters = read_visupars_parameters(visupars_file)
+                        PV_version = parameters.get("VisuCreatorVersion")
+                        print(PV_version)
+                        del parameters
+                
                 ####################
-                bruker2dicom(folder_to_convert, master)
+                if PV_version == "360.1.1":
+                    print("ciaone")
+                else:
+                    print("None")
+                    bruker2dicom(folder_to_convert, master)
                 ####################
 
                 ###################

@@ -13,6 +13,7 @@ from tkinter import filedialog,messagebox
 import threading
 import shutil
 from bruker2dicom import bruker2dicom
+from bruker2dicom_pv360 import bruker2dicom_pv360
 from include_patterns import include_patterns
 from remove_empty_dirs import remove_empty_dirs
 from restore_raw_dirs import restore_raw_dirs
@@ -164,10 +165,7 @@ class xnat_pic_gui(tk.Frame):
                     )
                     os._exit(0)
 
-                
-                print(folder_to_convert)
                 visupars_file = os.path.abspath(os.path.join(folder_to_convert, "1/pdata/1/visu_pars"))
-                print(visupars_file)
 
                 if os.path.exists(visupars_file):
                     try:
@@ -184,7 +182,7 @@ class xnat_pic_gui(tk.Frame):
                 ####################
                 if PV_version == "360.1.1":
                     try:                     
-                        print("ciaone")
+                        bruker2dicom_pv360(folder_to_convert, master)
                     except Exception as e:
                         messagebox.showerror("XNAT-PIC - Bruker2DICOM", e)
                         exc_type, exc_value, exc_traceback = sys.exc_info()

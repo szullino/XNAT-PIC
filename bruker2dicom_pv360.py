@@ -690,10 +690,11 @@ def bruker2dicom_pv360(folder_to_convert, master):
                             ds_temp.Creator = method_parameters.get("OWNER")
                             ds_temp.ChemicalExchangeSaturationType = method_parameters.get("Method")
                             ds_temp.SamplingType = method_parameters.get("PVM_SatTransType")
-                            ds_temp.PulseType = method_parameters.get("PVM_SatTransPulseEnum") 
-                            ds_temp.PulseDuration = method_parameters.get("PVM_SatTransPulse")[0]                                   
+                            ds_temp.PulseShape = method_parameters.get("PVM_SatTransPulseEnum") 
+                            ds_temp.PulseLength = method_parameters.get("PVM_SatTransPulse")[0]                                   
                             ds_temp.B1Saturation = method_parameters.get("PVM_SatTransPulseAmpl_uT")                           
                             ds_temp.PulseNumber = method_parameters.get("PVM_SatTransNPulses")                                                                  
+                            ds_temp.PulseLength2 = method_parameters.get("PVM_SatTransPulseLength2")
                             # train module needs to be checked
                             if 'train' in method_parameters.get("Method"):
                                 tau_p = float(method_parameters.get("PVM_SatTransPulse")[0])

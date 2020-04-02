@@ -21,7 +21,7 @@ def add_cest_dict():
         0x10611007: ("DS", "1", "Interpulse Delay", "", "InterpulseDelay"),
         0x10611008: ("DS", "1", "Saturation Length (ms)", "", "SaturationLength"),
         0x10611009: ("DS", "1", "Readout Time", "", "ReadoutTime"),
-        0x10611010: ("DS", "1", "Pulse Length2 (ms)", "", "PulseLength2"),
+        0x10611010: ("DS", "1", "Pulse Length 2 (ms)", "", "PulseLength2"),
         0x10611011: ("DS", "1", "Duty Cycle", "", "DutyCycle"),
         0x10611012: ("DS", "1", "Recovery Time (ms)", "", "RecoveryTime"),
         0x10611013: ("DS", "1", "Measurement Number", "", "MeasurementNumber"),

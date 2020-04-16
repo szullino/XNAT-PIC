@@ -702,6 +702,7 @@ def bruker2dicom_pv360(folder_to_convert, master):
                                 n = int(method_parameters.get("PVM_SatTransNPulses"))
                                 #method_parameters.get("PVM_SatTransModuleTime") #the result of this two lines should be the same
                                 #magtransmoduletime = (tau_p + tau_d) * n
+                                ds_temp.InterpulseDelay = tau_d
                                 ds_temp.DutyCycle = tau_p/(tau_p + tau_d) * 100      
                                 ds_temp.SaturationLength = method_parameters.get("PVM_SatTransModuleTime")
                             else:
@@ -744,6 +745,7 @@ def bruker2dicom_pv360(folder_to_convert, master):
                                 ds_temp.SaturationOffsetPpm = str(np.array(SatFreqPpm,dtype=float)[k]) 
                                 sat_freq_hz = SatFreqPpm[k] * ds_temp.ImagingFrequency 
                                 ds_temp.SaturationOffsetHz = sat_freq_hz        
+                                ds_temp.ReadoutTime = (ds_temp.RepetitionTime - ds_temp.PulseLength - (ds_temp.PulseLength2 * (f_step - 1)) )/ f_step #nFrames
                                                                                                
                                                                                            
                         outfile = "%s%s.dcm" % (filename_little_endian, str(count))

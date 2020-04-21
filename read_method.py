@@ -63,9 +63,12 @@ def read_method_parameters(filename):
             first_part = value[:splitter.start()]
             second_part = value[splitter.end():]
             
-            first_part = first_part.replace(' ','')
-            first_part = first_part.replace('(','')
-            first_part = first_part.replace(')','')
+            if '(' and ')' in first_part:
+                first_part = ""
+            else:                    
+                first_part = first_part.replace(' ','')
+                first_part = first_part.replace('(','')
+                first_part = first_part.replace(')','') 
             
             try:
                 value_size = [int(i) for i in first_part.split(',')]
@@ -107,7 +110,7 @@ def read_method_parameters(filename):
             except:
                 pass
 
-            value = str(second_part)      #manipulate strings to read them correctly
+            value = str(first_part) + str(second_part)      #manipulate strings to read them correctly
             value = value.replace('[','')     
             value = value.replace('(','')
             value = value.replace(')','')

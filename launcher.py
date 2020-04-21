@@ -167,7 +167,6 @@ class xnat_pic_gui(tk.Frame):
                     os._exit(0)
 
                 visupars_file = os.path.abspath(os.path.join(folder_to_convert, "1/pdata/1/visu_pars"))
-                method_file = os.path.abspath(os.path.join(folder_to_convert, "1/method"))
 
                 if os.path.exists(visupars_file):
                     try:
@@ -181,6 +180,7 @@ class xnat_pic_gui(tk.Frame):
                         traceback.print_tb(exc_traceback)
                         sys.exit(1)
                 else:
+                    method_file = os.path.abspath(os.path.join(folder_to_convert, "1/method"))
                     try:
                         with open(method_file, "r"):
                             method_parameters = read_method_parameters(method_file)

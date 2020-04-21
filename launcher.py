@@ -26,6 +26,7 @@ from list_cust_vars import list_cust_vars
 import subprocess
 from tkinter import ttk
 from read_visupars import read_visupars_parameters
+from read_method import read_method_parameters
 import traceback
 import sys
 
@@ -166,13 +167,26 @@ class xnat_pic_gui(tk.Frame):
                     os._exit(0)
 
                 visupars_file = os.path.abspath(os.path.join(folder_to_convert, "1/pdata/1/visu_pars"))
+                method_file = os.path.abspath(os.path.join(folder_to_convert, "1/method"))
 
                 if os.path.exists(visupars_file):
                     try:
                         with open(visupars_file, "r"):
-                            parameters = read_visupars_parameters(visupars_file)
-                            PV_version = parameters.get("VisuCreatorVersion")
-                            del parameters
+                            visupars_parameters = read_visupars_parameters(visupars_file)
+                            PV_version = visupars_parameters.get("VisuCreatorVersion")
+                            del visupars_parameters
+                    except Exception as e:
+                        messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)
+                        exc_type, exc_value, exc_traceback = sys.exc_info()
+                        traceback.print_tb(exc_traceback)
+                        sys.exit(1)
+                else:
+                    try:
+                        with open(method_file, "r"):
+                            method_parameters = read_method_parameters(method_file)
+                            PV_version = method_parameters.get("TITLE")
+                            print(PV_version)
+                            del method_parameters
                     except Exception as e:
                         messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)
                         exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -180,7 +194,7 @@ class xnat_pic_gui(tk.Frame):
                         sys.exit(1)
                 
                 ####################
-                if PV_version == "360.1.1":
+                if PV_version == "360.1.1" or 'ParaVision 360' in PV_version:
                     try:                     
                         bruker2dicom_pv360(folder_to_convert, master)
                     except Exception as e:

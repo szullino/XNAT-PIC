@@ -684,7 +684,6 @@ def bruker2dicom_pv360(folder_to_convert, master):
                                 # overwrite corresponding tag got from visupars with new info?
                                 
                             #method_parameters.get("PVM_DwNDiffExp")
-                                                                      
                         # CEST acquisition                                                                           
                         if "cest" in ds_temp.ProtocolName and method_parameters.get("PVM_SatTransOnOff") == 'On':
                             ds_temp.Creator = method_parameters.get("OWNER")
@@ -694,7 +693,6 @@ def bruker2dicom_pv360(folder_to_convert, master):
                             ds_temp.PulseLength = method_parameters.get("PVM_SatTransPulse")[0]                                   
                             ds_temp.B1Saturation = method_parameters.get("PVM_SatTransPulseAmpl_uT")                           
                             ds_temp.PulseNumber = method_parameters.get("PVM_SatTransNPulses")                                                                  
-                            ds_temp.PulseLength2 = method_parameters.get("PVM_SatTransPulseLength2")
                             # train module needs to be checked
                             if 'train' in method_parameters.get("Method"):
                                 tau_p = float(method_parameters.get("PVM_SatTransPulse")[0])
@@ -707,47 +705,99 @@ def bruker2dicom_pv360(folder_to_convert, master):
                                 ds_temp.SaturationLength = method_parameters.get("PVM_SatTransModuleTime")
                             else:
                                 ds_temp.DutyCycle = '100' 
-                                ds_temp.SaturationLength = ds_temp.PulseDuration * ds_temp.PulseNumber                                                                
+                                ds_temp.SaturationLength = ds_temp.PulseLength * ds_temp.PulseNumber                                                                
                             NSatFreq = method_parameters.get('PVM_NSatFreq')
-                            ds_temp.MeasurementNumber = NSatFreq
-                            ds_temp.RecoveryTime = int(ds_temp.RepetitionTime) - int(ds_temp.PulseDuration)
-                            if method_parameters.get("PVM_SatTransFreqUnit") == 'unit_ppm' and NSatFreq > 5:
-                                list_ppm = method_parameters.get('PVM_SatTransFreqValues')
-                                list_ppm = list_ppm[0].split("  ")
-                                while '' in list_ppm:
-                                    list_ppm.remove('')
-                                [elem.strip(' ') for elem in list_ppm]
-                                sat_freq_ppm = np.array(list_ppm, dtype=float)   
-                                if NSatFreq > 1 and NSatFreq == nframes:
-                                    ds_temp.SaturationOffsetPpm = sat_freq_ppm[k]
-                                    ds_temp.SaturationOffsetHz =  sat_freq_ppm[k] * ds_temp.ImagingFrequency 
-                                elif NSatFreq > 1 and NSatFreq != nframes:                            
-                                    f_step =  int(nframes/NSatFreq)
+                            if NSatFreq != None:
+                                f_step =  int(nframes/NSatFreq)
+                                ds_temp.MeasurementNumber = NSatFreq
+                                ds_temp.RecoveryTime = int(ds_temp.RepetitionTime) - int(ds_temp.PulseLength)
+                                freq_list = method_parameters.get('PVM_SatTransFreqValues') # frequency list is formatted differently for CEST Off and On, need to distinguish both cases
+                                if  method_parameters.get("PVM_SatTransFreqUnit") == 'unit_ppm' and "  " in freq_list[0]: #CEST ON 
+                                    freq_list = freq_list[0].split("  ")
+                                    while '' in freq_list:
+                                        freq_list.remove('')
+                                    [elem.strip(' ') for elem in freq_list]
+                                    sat_freq_ppm = np.array(freq_list, dtype=float)   
+                                    if NSatFreq > 1 and NSatFreq == nframes:
+                                        ds_temp.SaturationOffsetPpm = sat_freq_ppm[k]
+                                        ds_temp.SaturationOffsetHz =  sat_freq_ppm[k] * ds_temp.ImagingFrequency 
+                                    elif NSatFreq > 1 and NSatFreq != nframes:                            
+                                        SatFreqPpm = []
+                                        for t in range(0, NSatFreq):
+                                            for kk in range(0, f_step):
+                                               SatFreqPpm.append(sat_freq_ppm[t])                                   
+                                        ds_temp.SaturationOffsetPpm = str(np.array(SatFreqPpm,dtype=float)[k]) 
+                                        sat_freq_hz = SatFreqPpm[k] * ds_temp.ImagingFrequency 
+                                        ds_temp.SaturationOffsetHz = sat_freq_hz  
+                                    ### Tags for CEST ON only  
+                                    ds_temp.PulseLength2 = method_parameters.get("PVM_SatTransPulseLength2")
+                                    ds_temp.ReadoutTime = (ds_temp.RepetitionTime - ds_temp.PulseLength - (ds_temp.PulseLength2 * (f_step - 1))) / f_step
+                                elif method_parameters.get("PVM_SatTransFreqUnit") == 'unit_ppm' and " " in freq_list[0]: # CEST OFF   
+                                    freq_list = freq_list[0].split(" ")
+                                    while '' in freq_list:
+                                        freq_list.remove('')
+                                    [elem.strip(' ') for elem in freq_list]
+                                    sat_freq_ppm = np.array(freq_list, dtype=float) 
                                     SatFreqPpm = []
                                     for t in range(0, NSatFreq):
                                         for kk in range(0, f_step):
-                                           SatFreqPpm.append(sat_freq_ppm[t])                                   
+                                            SatFreqPpm.append(sat_freq_ppm[t])                                   
                                     ds_temp.SaturationOffsetPpm = str(np.array(SatFreqPpm,dtype=float)[k]) 
                                     sat_freq_hz = SatFreqPpm[k] * ds_temp.ImagingFrequency 
-                                    ds_temp.SaturationOffsetHz = sat_freq_hz                             
-                            elif method_parameters.get("PVM_SatTransFreqUnit") == 'unit_ppm' and NSatFreq == 5:
-                                list_ppm = method_parameters.get('PVM_SatTransFreqValues')
-                                list_ppm = list_ppm[0].split(" ")
-                                while '' in list_ppm:
-                                    list_ppm.remove('')
-                                [elem.strip(' ') for elem in list_ppm]
-                                sat_freq_ppm = np.array(list_ppm, dtype=float) 
-                                f_step =  int(nframes/NSatFreq)
-                                SatFreqPpm = []
-                                for t in range(0, NSatFreq):
-                                    for kk in range(0, f_step):
-                                       SatFreqPpm.append(sat_freq_ppm[t])                                   
-                                ds_temp.SaturationOffsetPpm = str(np.array(SatFreqPpm,dtype=float)[k]) 
-                                sat_freq_hz = SatFreqPpm[k] * ds_temp.ImagingFrequency 
-                                ds_temp.SaturationOffsetHz = sat_freq_hz        
-                                ds_temp.ReadoutTime = (ds_temp.RepetitionTime - ds_temp.PulseLength - (ds_temp.PulseLength2 * (f_step - 1)) )/ f_step #nFrames
-                                                                                               
-                                                                                           
+                                    ds_temp.SaturationOffsetHz = sat_freq_hz 
+                                    ### Not tested
+                                elif method_parameters.get("PVM_SatTransFreqUnit") == 'unit_hz' and "  " in freq_list[0]: #CEST ON 
+                                    freq_list = freq_list[0].split("  ")
+                                    while '' in freq_list:
+                                        freq_list.remove('')
+                                    [elem.strip(' ') for elem in freq_list]
+                                    sat_freq_hz = np.array(freq_list, dtype=float)   
+                                    if NSatFreq > 1 and NSatFreq == nframes:
+                                        ds_temp.SaturationOffsetHz = sat_freq_hz[k]
+                                        ds_temp.SaturationOffsetPpm =  sat_freq_hz[k] * ds_temp.ImagingFrequency 
+                                    elif NSatFreq > 1 and NSatFreq != nframes:                            
+                                        SatFreqHz = []
+                                        for t in range(0, NSatFreq):
+                                            for kk in range(0, f_step):
+                                               SatFreqHz.append(sat_freq_hz[t])                                   
+                                        ds_temp.SaturationOffsetHz = str(np.array(SatFreqHz,dtype=float)[k]) 
+                                        sat_freq_ppm = SatFreqHz[k] * ds_temp.ImagingFrequency 
+                                        ds_temp.SaturationOffsetPpm = sat_freq_ppm  
+                                    ### Tags for CEST ON only  
+                                    ds_temp.PulseLength2 = method_parameters.get("PVM_SatTransPulseLength2")
+                                    ds_temp.ReadoutTime = (ds_temp.RepetitionTime - ds_temp.PulseLength - (ds_temp.PulseLength2 * (f_step - 1))) / f_step
+                                elif method_parameters.get("PVM_SatTransFreqUnit") == 'unit_hz' and " " in freq_list[0]: # CEST OFF   
+                                    freq_list = freq_list[0].split(" ")
+                                    while '' in freq_list:
+                                        freq_list.remove('')
+                                    [elem.strip(' ') for elem in freq_list]
+                                    sat_freq_hz = np.array(freq_list, dtype=float) 
+                                    SatFreqHz= []
+                                    for t in range(0, NSatFreq):
+                                        for kk in range(0, f_step):
+                                            SatFreqHz.append(sat_freq_hz[t])                                   
+                                    ds_temp.SaturationOffsetHz = str(np.array(SatFreqHz,dtype=float)[k]) 
+                                    sat_freq_ppm = SatFreqHz[k] * ds_temp.ImagingFrequency 
+                                    ds_temp.SaturationOffsetPpm = sat_freq_ppm  
+                            elif NSatFreq == None and method_parameters.get("PVM_SatTransFreqUnit") == 'unit_ppm':
+                                freq_list = method_parameters.get('PVM_SatTransFreqValues') # frequency list is formatted differently for CEST Off and On, need to distinguish both cases
+                                freq_list = freq_list[0].split(" ")
+                                while '' in freq_list:
+                                    freq_list.remove('')
+                                [elem.strip(' ') for elem in freq_list]
+                                sat_freq_ppm = np.array(freq_list, dtype=float)  
+                                ds_temp.SaturationOffsetPpm = sat_freq_ppm[k]
+                                ds_temp.SaturationOffsetHz =  sat_freq_ppm[k] * ds_temp.ImagingFrequency 
+                            elif NSatFreq == None and method_parameters.get("PVM_SatTransFreqUnit") == 'unit_hz':
+                                freq_list = method_parameters.get('PVM_SatTransFreqValues') # frequency list is formatted differently for CEST Off and On, need to distinguish both cases
+                                freq_list = freq_list[0].split(" ")
+                                while '' in freq_list:
+                                    freq_list.remove('')
+                                [elem.strip(' ') for elem in freq_list]
+                                sat_freq_hz = np.array(freq_list, dtype=float)  
+                                ds_temp.SaturationOffsetHz = sat_freq_hz[k]
+                                ds_temp.SaturationOffsetPpm =  sat_freq_hz[k] * ds_temp.ImagingFrequency                                               
+                                                                                                                  
                         outfile = "%s%s.dcm" % (filename_little_endian, str(count))
                         
                         # Save dicoms in separate slices

@@ -185,7 +185,6 @@ class xnat_pic_gui(tk.Frame):
                         with open(method_file, "r"):
                             method_parameters = read_method_parameters(method_file)
                             PV_version = method_parameters.get("TITLE")
-                            print(PV_version)
                             del method_parameters
                     except Exception as e:
                         messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)

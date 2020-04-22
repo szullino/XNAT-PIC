@@ -163,35 +163,46 @@ class xnat_pic_gui(tk.Frame):
                         by a new conversion. If you want to proceed with the conversion please \
                         delete/move/rename the existing folder"
                         % dst,
-                    )
-                    os._exit(0)
-
-                visupars_file = os.path.abspath(os.path.join(folder_to_convert, "1/pdata/1/visu_pars"))
-
-                if os.path.exists(visupars_file):
-                    try:
-                        with open(visupars_file, "r"):
-                            visupars_parameters = read_visupars_parameters(visupars_file)
-                            PV_version = visupars_parameters.get("VisuCreatorVersion")
-                            del visupars_parameters
-                    except Exception as e:
-                        messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)
-                        exc_type, exc_value, exc_traceback = sys.exc_info()
-                        traceback.print_tb(exc_traceback)
-                        sys.exit(1)
-                else:
-                    method_file = os.path.abspath(os.path.join(folder_to_convert, "1/method"))
-                    try:
-                        with open(method_file, "r"):
-                            method_parameters = read_method_parameters(method_file)
-                            PV_version = method_parameters.get("TITLE")
-                            del method_parameters
-                    except Exception as e:
-                        messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)
-                        exc_type, exc_value, exc_traceback = sys.exc_info()
-                        traceback.print_tb(exc_traceback)
-                        sys.exit(1)
-                
+                    )                            
+                            
+                a = "1"
+                c = "visu_pars"
+                e = "method"
+                for root, dirs, files in sorted(os.walk(folder_to_convert, topdown=True)):
+                    for dir in dirs:
+                        res = os.path.join(root)
+                        dirs[:] = []  # Don't recurse any deeper
+                        visupars_file = os.path.abspath(os.path.join(res, a, c))
+                        method_file = os.path.abspath(os.path.join(os.path.dirname(res), e))
+                        print(visupars_file)
+                        print(method_file)
+                        if os.path.exists(visupars_file):
+                            try:
+                                with open(visupars_file, "r"):
+                                    visupars_parameters = read_visupars_parameters(visupars_file)
+                                    PV_version = visupars_parameters.get("VisuCreatorVersion")
+                                    print(visupars_file)
+                                    print(PV_version)
+                                    del visupars_parameters
+                            except Exception as e:
+                                messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)
+                                exc_type, exc_value, exc_traceback = sys.exc_info()
+                                traceback.print_tb(exc_traceback)
+                                sys.exit(1)
+                        elif os.path.exists(method_file):
+                            try:
+                                with open(method_file, "r"):
+                                    method_parameters = read_method_parameters(method_file)
+                                    PV_version = method_parameters.get("TITLE")
+                                    print(method_file)
+                                    print(PV_version)
+                                    del method_parameters
+                            except Exception as e:
+                                messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)
+                                exc_type, exc_value, exc_traceback = sys.exc_info()
+                                traceback.print_tb(exc_traceback)
+                                sys.exit(1)
+                            
                 ####################
                 if PV_version == "360.1.1" or 'ParaVision 360' in PV_version:
                     try:                     

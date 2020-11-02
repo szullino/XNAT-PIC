@@ -112,12 +112,12 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                                         exp.fields[element] = custom_values[i]
                                     os.remove(zip_dst)
                             except Exception as e:
-                                messagebox.showerror("XNAT-PIC - DICOM Uploader", e)
+                                messagebox.showerror("XNAT-PIC - Uploader", e)
                                 exc_type, exc_value, exc_traceback = sys.exc_info()
                                 traceback.print_tb(exc_traceback)
                                 sys.exit(1)
                         except Exception as errr:
-                            messagebox.showerror("XNAT-PIC - DICOM Uploader", errr)
+                            messagebox.showerror("XNAT-PIC - Uploader", errr)
                             exc_type, exc_value, exc_traceback = sys.exc_info()
                             traceback.print_tb(exc_traceback)
                             sys.exit(1)
@@ -131,7 +131,7 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
             root.withdraw()
             root.attributes("-topmost", True)
             bruker_folder = filedialog.askdirectory(parent=root,initialdir=os.path.expanduser("~"),\
-                                                    title='Please select Bruker directory')
+                                                    title='Please select Bruker files directory')
             print(bruker_folder)
             session = xnat.connect(address, user, psw)
             rsc_label = 'bruker_data'
@@ -147,13 +147,13 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
 
         ########
         messagebox.showinfo(
-            "XNAT-PIC - DICOM Uploader", "DICOM images have been successfully imported to XNAT!"
+            "XNAT-PIC - Uploader", "DICOM images have been successfully imported to XNAT!"
         )
 
         os._exit(0)
 
     except Exception as err:
-        messagebox.showerror("XNAT-PIC - DICOM Uploader", err)
+        messagebox.showerror("XNAT-PIC - Uploader", err)
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_tb(exc_traceback)
         session.disconnect()

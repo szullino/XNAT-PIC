@@ -48,10 +48,10 @@ class xnat_pic_gui(tk.Frame):
             self.root.screenwidth=self.root.winfo_screenwidth()
             self.root.screenheight=self.root.winfo_screenheight()
 
-        self.root.title("XNAT-PIC (University of Torino)")
+        self.root.title("   XNAT-PIC   ~   Molecular Imaging Center   ~   University of Torino   ")
         self.root.resizable(False, False)
         self.root.width = 600
-        self.root.height = 150
+        self.root.height = 100
         self.x = (int(self.root.screenwidth) - self.root.width) / 2
         self.y = (int(self.root.screenheight)- self.root.height) / 3
         self.root.geometry("%dx%d+%d+%d" % (self.root.width, self.root.height, self.x, self.y))
@@ -70,31 +70,31 @@ class xnat_pic_gui(tk.Frame):
 
         self.label_bruker_dicom = tk.Label(
             self.frame_labels,
-            text="  Convert your images from Bruker to DICOM format:",
+            text="   Convert images from Bruker ParaVision format to DICOM standard  ",
             anchor="w",
         )
         self.label_bruker_dicom.pack(anchor="w", pady=3)
         self.label_aspect_dicom = tk.Label(
             self.frame_labels,
-            text="  Convert your images from Aspect to DICOM format:",
+            text="   Convert images from Aspect Imaging to DICOM standard  ",
             anchor="w",
         )
         self.label_aspect_dicom.pack(anchor="w", pady=8)
         self.label_dicom_uploader = tk.Label(
             self.frame_labels,
-            text="  Upload your DICOM images to XNAT:",
+            text="   Upload DICOM images to XNAT  ",
             anchor="w",
         )
         self.label_dicom_uploader.pack(anchor="w", pady=7)
 
         self.button1 = tk.Button(
-            self.frame_buttons, text="Bruker2DICOM  ", command=partial(self.bruker2dicom_conversion,self))
+            self.frame_buttons, text="  Bruker2DICOM  ", command=partial(self.bruker2dicom_conversion,self))
 
         self.button1.pack(padx=10, pady=0)
-        self.button2 = tk.Button(self.frame_buttons, text="Aspect2DICOM ")
+        self.button2 = tk.Button(self.frame_buttons, text="  Aspect2DICOM  ")
         self.button2.pack(padx=10, pady=1)
         self.button3 = tk.Button(
-            self.frame_buttons, text="DICOM Uploader ", command=partial(self.xnat_dcm_uploader,self)
+            self.frame_buttons, text="   Uploader   ", command=partial(self.xnat_dcm_uploader,self)
         )
         self.button3.pack(padx=10, pady=1)
 
@@ -136,7 +136,7 @@ class xnat_pic_gui(tk.Frame):
                 folder_to_convert = filedialog.askdirectory(
                     parent=master.root,
                     initialdir=os.path.expanduser("~"),
-                    title="Please select directory",
+                    title="XNAT-PIC: Select project directory in Bruker ParaVision format",
                 )
 
                 if not folder_to_convert:
@@ -155,7 +155,7 @@ class xnat_pic_gui(tk.Frame):
                     messagebox.showwarning(
                         "Destination folder already exists",
                         "Destination folder %s already exists and it won't be overridden \
-                        by a new conversion. If you want to proceed with the conversion please \
+                        by a new conversion. If you want to proceed with the conversion, please \
                         delete/move/rename the existing folder"
                         % dst,
                     )
@@ -198,7 +198,7 @@ class xnat_pic_gui(tk.Frame):
                 
 
                 answer = messagebox.askyesno(
-                    "XNAT-PIC - DICOM Uploader", "Do you want to upload your project to XNAT?"
+                    "XNAT-PIC  ~  Uploader", "Do you want to upload your project to XNAT?"
                 )
                 # self.frame_main.destroy()
                 if answer is True and os.path.isdir(dest) == True:
@@ -212,7 +212,7 @@ class xnat_pic_gui(tk.Frame):
         def __init__(self, master,home=""):
             self.home = os.path.expanduser("~")
             master.root.update()
-            master.root.title("XNAT-PIC - DICOM Uploader")
+            master.root.title("XNAT-PIC  ~  Uploader")
             master.root.deiconify()
             master.frame_main.destroy()
             master.root.width = 600
@@ -230,7 +230,7 @@ class xnat_pic_gui(tk.Frame):
             ''' XNAT ADDRESS '''
 
             self.label_address = tk.Label(
-                self.frame_upload_labels, text="XNAT Address", anchor="w"
+                self.frame_upload_labels, text="  XNAT web address  ", anchor="w"
             )
             self.label_address.grid(row=0, column=0, padx=1, ipadx=1)
             self.entry_address = tk.Entry(self.frame_upload_labels)
@@ -271,14 +271,14 @@ class xnat_pic_gui(tk.Frame):
             # BUTTONS
             self.button_connect = tk.Button(
                 self.frame_upload_button,
-                text="Connect",
+                text="Login",
                 state="disabled",
                 command=partial(self.check_connection,master)
             )
             self.button_connect.grid(row=4, column=5, sticky="SE")
             self.button_http = tk.Radiobutton(
                 self.frame_upload_button,
-                text="http://",
+                text=" http:// ",
                 variable=self.http,
                 value="http://",
             )
@@ -286,7 +286,7 @@ class xnat_pic_gui(tk.Frame):
             self.button_http.select()
             self.button_https = tk.Radiobutton(
                 self.frame_upload_button,
-                text="https://",
+                text=" https:// ",
                 variable=self.http,
                 value="https://",
             )
@@ -438,7 +438,7 @@ class xnat_pic_gui(tk.Frame):
             if self.entry_prjname.var.get().lower in self.OPTIONS:
                 messagebox.showerror(
                     "Error!",
-                    "There's already a project having as ID %s! Please choose a different project ID"
+                    "Project ID %s already exists! Please, enter a different project ID"
                     % self.entry_prjname.var.get(),
                 )
             else:
@@ -461,20 +461,20 @@ class xnat_pic_gui(tk.Frame):
 
             # # LABEL
             self.label_prjname = tk.Label(
-                self.frame_two, text="  New project", anchor="w", state="disabled"
+                self.frame_two, text="  New project    ", anchor="w", state="disabled"
             )
             self.label_choose_prj = tk.Label(
-                self.frame_two, text="  Select project from XNAT", anchor="w"
+                self.frame_two, text="  Select project in XNAT  ", anchor="w"
             )
             self.label_choose_prj.grid(row=2, column=0)
             self.label_prjname.grid(row=0, column=0, sticky="W", columnspan=1)
             # # ENTRY INSERT NEW PROJECT
             self.value = tk.StringVar()
             self.entry_prjname = tk.Entry(self.frame_two, state="disabled")
-            self.value.set("Project ID")
+            self.value.set("  Project ID  ")
             self.entry_prjname.grid(row=0, column=1)
             self.entry_prjname.var = tk.StringVar()
-            self.entry_prjname.var.set("Project ID")
+            self.entry_prjname.var.set("  Project ID  ")
             self.entry_prjname["textvariable"] = self.entry_prjname.var
 
             # PROJECTS LIST
@@ -523,7 +523,7 @@ class xnat_pic_gui(tk.Frame):
             self.folder_to_upload = filedialog.askdirectory(
                 parent=master.root,
                 initialdir=self.home,
-                title="XNAT-PIC: Please select project directory (DICOM only)",
+                title="Please select project directory (DICOM only)",
             )
             if self.folder_to_upload==():
                 os._exit(1)
@@ -539,7 +539,7 @@ class xnat_pic_gui(tk.Frame):
 
             self.label_descr = tk.Label(
                 self.frame_three,
-                text="Type the number of custom variables \n(from 0 to 3)",
+                text="   Enter the number of custom variables \n(from 0 to 3)   ",
                 anchor="w",
                 state="normal",
             )
@@ -554,7 +554,7 @@ class xnat_pic_gui(tk.Frame):
 
             self.btn_add = tk.Button(
                 self.frame_three,
-                text="List custom variables",
+                text="List Custom Variables",
                 command=self.display_cust_vars_list,
                 state="disabled",
             )

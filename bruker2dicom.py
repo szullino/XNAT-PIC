@@ -594,7 +594,7 @@ def bruker2dicom(folder_to_convert, master):
                             ds_temp.ChemicalExchangeSaturationType = method_parameters.get("Method")
                         except:
                             ds_temp.ChemicalExchangeSaturationType = method_parameters.get("method")
-                        ds_temp.SamplingType = "CEST"
+                        ds_temp.SaturationType = "CEST"
                         if ds_temp.InstitutionName == "Bracco Imaging":
                             ds_temp.PulseShape = method_parameters.get("PVM_MagTransPulse1Enum")  # train
                             ds_temp.PulseLength = method_parameters.get("PVM_MagTransPulse1")[0]  # train

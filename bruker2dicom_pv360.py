@@ -690,7 +690,7 @@ def bruker2dicom_pv360(folder_to_convert, master):
                     if "cest" in ds_temp.ProtocolName and method_parameters.get("PVM_SatTransOnOff") == 'On':
                         ds_temp.Creator = method_parameters.get("OWNER")
                         ds_temp.ChemicalExchangeSaturationType = method_parameters.get("Method")
-                        ds_temp.SamplingType = method_parameters.get("PVM_SatTransType")
+                        ds_temp.SaturationType = method_parameters.get("PVM_SatTransType")
                         ds_temp.PulseShape = method_parameters.get("PVM_SatTransPulseEnum") 
                         ds_temp.PulseLength = method_parameters.get("PVM_SatTransPulse")[0]                                   
                         ds_temp.B1Saturation = method_parameters.get("PVM_SatTransPulseAmpl_uT")                           

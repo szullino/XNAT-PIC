@@ -13,7 +13,7 @@ def add_cest_dict():
     new_dict_items = {
         0x10610010: ("LO", "1", "CEST Parameters Creator", "", "Creator"),  # (data type, multiplicity, tag displayed name, tag keyword)
         0x10611001: ("LO", "1", "Chemical Exchange Saturation Type", "", "ChemicalExchangeSaturationType"),
-        0x10611002: ("LO", "1", "Sampling Type", "", "SamplingType"),
+        0x10611002: ("LO", "1", "Saturation Type", "", "SaturationType"),
         0x10611003: ("LO", "1", "Pulse Shape", "", "PulseShape"),
         0x10611004: ("DS", "1", "B1 Saturation (μT)", "", "B1Saturation"),
         0x10611005: ("DS", "1", "Pulse Length (ms)", "", "PulseLength"),

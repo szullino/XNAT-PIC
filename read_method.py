@@ -11,43 +11,42 @@ Read Bruker visu_pars file.
 Returns a dictionary of paramaters.
 
 Adapted from Matteo Caffini
-"""
+"""    
 import re
 import numpy as np
 from datetime import datetime
 
-
 def read_method_parameters(filename):
 
-    # filename = 'F:/Sara Zullino/CIM/MRI_CEST_OLEA/7T_gluco_iopa/red20180221_122112_aa_gluco_PET_b16_15_1_1/11/method'
+#filename = 'F:/Sara Zullino/CIM/MRI_CEST_OLEA/7T_gluco_iopa/red20180221_122112_aa_gluco_PET_b16_15_1_1/11/method'
 
-    file_ID = open(filename, "r")
+    file_ID = open(filename, 'r')
     C = file_ID.read()
     file_ID.close()
-
-    C = re.sub("\$\$([^\n]*)\n", "", C)
-    C = re.split("\s*##", C)
-    C.remove("")
-
-    parameters = {"_extra": []}
-    orig = {"_extra": []}
-
+        
+    C = re.sub('\$\$([^\n]*)\n','',C)
+    C = re.split('\s*##',C)
+    C.remove('')
+    
+    parameters = {'_extra':[]}
+    orig = {'_extra':[]}
+        
     for ii in range(len(C)):
         parameter_line = C[ii]
-        splitter = re.search("=", parameter_line)
-
+        splitter = re.search('=',parameter_line)
+        
         # process parameter name
-        name = parameter_line[: splitter.start()]
-        if "$" in name:
-            name = name.replace("$", "")
+        name = parameter_line[:splitter.start()]
+        if '$' in name:
+            name = name.replace('$','')
         else:
             pass
-
+        
         # process parameter value
-        value = parameter_line[splitter.end() :]
+        value = parameter_line[splitter.end():]
         orig[name] = value
-
-        if "\n" not in value:
+        
+        if '\n' not in value:
             try:
                 value = float(value)
                 if round(value) == value:
@@ -60,24 +59,27 @@ def read_method_parameters(filename):
                 except:
                     pass
         else:
-            splitter = re.search("\n", value)
-            first_part = value[: splitter.start()]
-            second_part = value[splitter.end() :]
-
-            first_part = first_part.replace(" ", "")
-            first_part = first_part.replace("(", "")
-            first_part = first_part.replace(")", "")
-
+            splitter = re.search('\n',value)
+            first_part = value[:splitter.start()]
+            second_part = value[splitter.end():]
+            
+            if '(' and ')' in first_part:
+                first_part = ""
+            else:                    
+                first_part = first_part.replace(' ','')
+                first_part = first_part.replace('(','')
+                first_part = first_part.replace(')','') 
+            
             try:
-                value_size = [int(i) for i in first_part.split(",")]
+                value_size = [int(i) for i in first_part.split(',')]
                 value_size = tuple(value_size)
             except:
                 pass
-
+            
             second_part = second_part.split()
-
+    
             if len(second_part) == 0:
-                second_part = ""
+                second_part = ''
             elif len(second_part) == 1:
                 second_part = second_part[0]
                 try:
@@ -90,42 +92,38 @@ def read_method_parameters(filename):
                     except:
                         pass
             else:
-                second_part = [
-                    second_part[i].replace("<", "") for i in range(len(second_part))
-                ]
-                second_part = [
-                    second_part[i].replace(">", "") for i in range(len(second_part))
-                ]
-                if ":" in second_part[0]:
-                    datestring = " ".join(second_part)
-                    # second_part = datetime.strptime(datestring,'%H:%M:%S %d %b %Y') #avoid interpret the line Auto Adj
+                second_part = [second_part[i].replace('<','') for i in range(len(second_part))]
+                second_part = [second_part[i].replace('>','') for i in range(len(second_part))]
+                if ':' in second_part[0]:
+                    datestring = ' '.join(second_part)
+                    #second_part = datetime.strptime(datestring,'%H:%M:%S %d %b %Y') #avoid interpret the line Auto Adj
                 else:
                     pass
                 try:
-                    second_part = np.array(second_part, dtype=float)
-                    second_part = np.reshape(second_part, value_size)
+                    second_part = np.array(second_part,dtype=float)
+                    second_part = np.reshape(second_part,value_size)
                 except:
                     pass
-            try:
-                second_part = second_part.replace("<", "")
-                second_part = second_part.replace(">", "")
+            try:        
+                second_part = second_part.replace('<','')
+                second_part = second_part.replace('>','')
             except:
                 pass
 
-            value = str(first_part) + str(
-                second_part
-            )  # manipulate strings to read them correctly
-            value = value.replace("[", "")
-            value = value.replace("(", "")
-            value = value.replace(")", "")
-            value = value.replace("]", "")
-            value = value.replace("'", "")
-            value = value.replace(",,", ",")
-            value = value.split(",")
-            # parameters.get("PVM_MagTransPulse1").split(',')
-
+            value = str(first_part) + str(second_part)      #manipulate strings to read them correctly
+            value = value.replace('[','')     
+            value = value.replace('(','')
+            value = value.replace(')','')
+            value = value.replace(']','')
+            value = value.replace("'",'')
+            value = value.replace(',,',',')
+            value = value.replace('\n','')
+            value = value.split(',')
+            #parameters.get("PVM_MagTransPulse1").split(',')
+        
         parameters[name] = value
-
-    del parameters["_extra"]
-
+    
+    del parameters['_extra']
+        
     return parameters
+    

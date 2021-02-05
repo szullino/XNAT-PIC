@@ -13,6 +13,7 @@ from tkinter import filedialog,messagebox
 import threading
 import shutil
 from bruker2dicom import bruker2dicom
+from bruker2dicom_pv360 import bruker2dicom_pv360
 from include_patterns import include_patterns
 from remove_empty_dirs import remove_empty_dirs
 from restore_raw_dirs import restore_raw_dirs
@@ -24,6 +25,10 @@ import pyAesCrypt
 from list_cust_vars import list_cust_vars
 import subprocess
 from tkinter import ttk
+from read_visupars import read_visupars_parameters
+from read_method import read_method_parameters
+import traceback
+import sys
 
 bufferSize = 64 * 1024
 password = "worstsymmetricpasswordever19"
@@ -158,15 +163,68 @@ class xnat_pic_gui(tk.Frame):
                         by a new conversion. If you want to proceed with the conversion, please \
                         delete/move/rename the existing folder"
                         % dst,
-                    )
-                    os._exit(0)
+                    )                            
+                            
+                a = "1"
+                c = "visu_pars"
+                e = "method"
+                for root, dirs, files in sorted(os.walk(folder_to_convert, topdown=True)):
+                    for dir in dirs:
+                        res = os.path.join(root)
+                        dirs[:] = []  # Don't recurse any deeper
+                        visupars_file = os.path.abspath(os.path.join(res, a, c))
+                        method_file = os.path.abspath(os.path.join(os.path.dirname(res), e))
+                        #print(visupars_file)
+                        #print(method_file)
+                        if os.path.exists(visupars_file):
+                            try:
+                                with open(visupars_file, "r"):
+                                    visupars_parameters = read_visupars_parameters(visupars_file)
+                                    PV_version = visupars_parameters.get("VisuCreatorVersion")
+                                    #print(visupars_file)
+                                    #print(PV_version)
+                                    del visupars_parameters
+                            except Exception as e:
+                                messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)
+                                exc_type, exc_value, exc_traceback = sys.exc_info()
+                                traceback.print_tb(exc_traceback)
+                                sys.exit(1)
+                        elif os.path.exists(method_file):
+                            try:
+                                with open(method_file, "r"):
+                                    method_parameters = read_method_parameters(method_file)
+                                    PV_version = method_parameters.get("TITLE")
+                                    #print(method_file)
+                                    #print(PV_version)
+                                    del method_parameters
+                            except Exception as e:
+                                messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)
+                                exc_type, exc_value, exc_traceback = sys.exc_info()
+                                traceback.print_tb(exc_traceback)
+                                sys.exit(1)
+                            
                 ####################
-                bruker2dicom(folder_to_convert, master)
+                if PV_version == "360.1.1" or 'ParaVision 360' in PV_version:
+                    try:                     
+                        bruker2dicom_pv360(folder_to_convert, master)
+                    except Exception as e:
+                        messagebox.showerror("XNAT-PIC - Bruker2DICOM", e)
+                        exc_type, exc_value, exc_traceback = sys.exc_info()
+                        traceback.print_tb(exc_traceback)
+                        sys.exit(1)                
+                else:
+                    try:
+                        bruker2dicom(folder_to_convert, master)
+                    except Exception as e:
+                        messagebox.showerror("XNAT-PIC - Bruker2Dicom", e)
+                        exc_type, exc_value, exc_traceback = sys.exc_info()
+                        traceback.print_tb(exc_traceback)
+                        sys.exit(1)
                 ####################
 
-                ###################
+                ####################
                 master.progress.stop()
-                ###################
+                ####################
 
                 # Copy the directory tree while keeping DICOM files only
                 try:
@@ -180,28 +238,62 @@ class xnat_pic_gui(tk.Frame):
                 # Remove empty directories
                 remove_empty_dirs(dst)
                 
-                # Source path  
-                source = dst
+                # # Source path  
+                # source = dst
                   
-                # Destination path  
+                # # Destination path  
                 
-                destination = os.path.join(head,'MR')
+                # destination = os.path.join(head,'MR')
 
-                os.mkdir(destination)
+                # os.mkdir(destination)
 
-                # Move the content of  
-                # source to destination  
-                folder = os.listdir(source)
-                for f in folder:
-                    shutil.move(os.path.join(source,f), destination)
-                dest = shutil.move(destination, source) 
+                # # Move the content of  
+                # # source to destination  
+                # folder = os.listdir(source)
+                # print(folder)
+                # for f in folder:
+                #     print(f)
+                #     shutil.move(os.path.join(source,f), destination)
+                # dest = shutil.move(destination, source) 
                 
+                flag = []
+
+                ## FIND DEPTH OF SUBJECT FOLDER ##
+                for root, dirs, files in sorted(os.walk(dst, topdown=True)):
+                    depth = root[len(dst) :].count(os.path.sep)
+                    for file in files:
+                        if re.match("([^^]|[a-z]|[A-Z]|[0-9])*$", file):
+                            flag = 1
+                        else:
+                            flag = 0
+                    if flag == 1:
+                        subject_depth = depth - 2
+                        if subject_depth < 0:
+                            subject_depth = 0
+                        del dirs
+                        dirs = []
+                        dirs[:] = []
+                for root, dirs, files in sorted(os.walk(dst, topdown=True)):
+                    depth = root[len(dst) :].count(os.path.sep)
+                    if subject_depth == depth:
+                        for subject_name in dirs:
+                            subject_dir = os.path.join(root,subject_name)
+                            if os.path.exists(subject_dir) is True:
+                                
+                                destination = os.path.join(subject_dir,'MR')
+                
+                                os.mkdir(destination)
+                
+                                # Move the content of source to destination  
+                                folder = os.listdir(subject_dir)
+                                for f in folder:
+                                    shutil.move(os.path.join(subject_dir,f), destination)
 
                 answer = messagebox.askyesno(
                     "XNAT-PIC  ~  Uploader", "Do you want to upload your project to XNAT?"
                 )
                 # self.frame_main.destroy()
-                if answer is True and os.path.isdir(dest) == True:
+                if answer is True and os.path.isdir(dst) == True:
                     master.xnat_dcm_uploader(master,os.path.join(head,project_foldername))
                 else:
                     os._exit(0)

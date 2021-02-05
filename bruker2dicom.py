@@ -594,16 +594,16 @@ def bruker2dicom(folder_to_convert, master):
                             ds_temp.ChemicalExchangeSaturationType = method_parameters.get("Method")
                         except:
                             ds_temp.ChemicalExchangeSaturationType = method_parameters.get("method")
-                        ds_temp.SamplingType = "CEST"
+                        ds_temp.SaturationType = "CEST"
                         if ds_temp.InstitutionName == "Bracco Imaging":
-                            ds_temp.PulseType = method_parameters.get("PVM_MagTransPulse1Enum")  # train
-                            ds_temp.PulseDuration = method_parameters.get("PVM_MagTransPulse1")[0]  # train
+                            ds_temp.PulseShape = method_parameters.get("PVM_MagTransPulse1Enum")  # train
+                            ds_temp.PulseLength = method_parameters.get("PVM_MagTransPulse1")[0]  # train
                         else:
-                            ds_temp.PulseType = method_parameters.get("PVM_MagTransPulseEnum")  # train
-                            ds_temp.PulseDuration = method_parameters.get("PVM_MagTransPulse")[0]
+                            ds_temp.PulseShape = method_parameters.get("PVM_MagTransPulseEnum")  # train
+                            ds_temp.PulseLength = method_parameters.get("PVM_MagTransPulse")[0]
                         ds_temp.B1Saturation = method_parameters.get("PVM_MagTransPower")  # train
                         ds_temp.PulseNumber = method_parameters.get("PVM_MagTransPulsNumb")  # train
-                        ds_temp.SaturationLength = ds_temp.PulseDuration * ds_temp.PulseNumber
+                        ds_temp.SaturationLength = ds_temp.PulseLength * ds_temp.PulseNumber
                         if "train" in method_parameters.get("Method"):
                             tau_p = float(method_parameters.get("PVM_MagTransPulse")[0])
                             tau_d = float(method_parameters.get("PVM_MagTransInterDelay"))
@@ -615,7 +615,7 @@ def bruker2dicom(folder_to_convert, master):
                         else:
                             ds_temp.DutyCycle = "100"
                         ds_temp.MeasurementNumber = acqp_parameters.get("ACQ_O2_list_size")
-                        ds_temp.RecoveryTime = int(ds_temp.RepetitionTime) - int(ds_temp.PulseDuration)
+                        ds_temp.RecoveryTime = int(ds_temp.RepetitionTime) - int(ds_temp.PulseLength)
                         if np.size(acqp_parameters.get("ACQ_O2_list"))>1 and np.size(acqp_parameters.get("ACQ_O2_list"))==nframes:
                             ds_temp.SaturationOffsetHz = acqp_parameters.get('ACQ_O2_list')[k]
                             ds_temp.SaturationOffsetPpm = acqp_parameters.get('ACQ_O2_list')[k]/ds_temp.ImagingFrequency 
@@ -646,9 +646,9 @@ def bruker2dicom(folder_to_convert, master):
                             # Add_dict_entries (new_dict_items)
                             ds_temp.Creator = method_parameters.get("OWNER")
                             ds_temp.ChemicalExchangeSaturationType = method_parameters.get("Method")
-                            ds_temp.PulseType = str(method_parameters.get("CestPulseEnum"))  # train
-                            ds_temp.PulseDuration = method_parameters.get("CestPulse")[0]  # train
-                            ds_temp.RecoveryTime = int(ds_temp.RepetitionTime) + int(ds_temp.PulseDuration)
+                            ds_temp.PulseShape = str(method_parameters.get("CestPulseEnum"))  # train
+                            ds_temp.PulseLength = method_parameters.get("CestPulse")[0]  # train
+                            ds_temp.RecoveryTime = int(ds_temp.RepetitionTime) + int(ds_temp.PulseLength)
                             if "TRAIN" in method_parameters.get("Method"):
                                 # att_db = method_parameters.get("CestPulse")[3] #need to convert this in uT
                                 tau_p = float(method_parameters.get("CestPulse")[0])
@@ -660,7 +660,7 @@ def bruker2dicom(folder_to_convert, master):
                                 ds_temp.DutyCycle = method_parameters.get("DutyCycle")
                             else:
                                 ds_temp.PulseNumber = 1  # CW
-                                ds_temp.SaturationLength = ds_temp.PulseDuration * ds_temp.PulseNumber
+                                ds_temp.SaturationLength = ds_temp.PulseLength * ds_temp.PulseNumber
                                 ds_temp.DutyCycle = "100"
 
                             ds_temp.MeasurementNumber = acqp_parameters.get("ACQ_O2_list_size")

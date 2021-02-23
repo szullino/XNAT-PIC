@@ -357,7 +357,7 @@ sara.zullino@unito.it | T +39 011 670 9539
 [issues-shield]: https://img.shields.io/github/issues/szullino/XNAT-PIC
 [issues-url]: https://github.com/szullino/XNAT-PIC/issues
 [license-shield]: https://img.shields.io/github/license/szullino/XNAT-PIC
-[license-url]: https://github.com/szullino/XNAT-PIC/blob/master/LICENSE.txt
+[license-url]: https://github.com/szullino/XNAT-PIC/blob/master/LICENSE.md
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-blue/?style=flat&logo=linkedin&color=0088CC&labelColor=blue
 [linkedin-url]: https://www.linkedin.com/in/sarazullino/
 [publons-shield]: https://img.shields.io/badge/Publons-blue/?style=flat&logo=publons&color=0088CC&labelColor=blue

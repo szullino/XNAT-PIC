@@ -309,10 +309,10 @@ Please, **cite these repositories** by using: <br>
 
 * "Towards sharing and reusing of preclinical image data". Euro-Bioimaging website, https://www.eurobioimaging.eu/news/towards-sharing-and-reusing-of-preclinical-image-data/
 
-* "Data Management: Biological and Preclinical Imaging Perspective". Euro-Bioimaging Virtual Pub, February 12th, 2021: 
+* "Data Management: Biological and Preclinical Imaging Perspective". Euro-Bioimaging Virtual Pub, February 12th, 2021. <br>
 [![](https://img.youtube.com/vi/QNiAGuFk53w/0.jpg)](https://youtu.be/QNiAGuFk53w "")
 
-* "XNAT-PIC: expanding XNAT for image archiving and processing to Preclinical Imaging Centers". Demonstrator 5 from Populating EOSC-Life: Success stories for the Demonstrators – Session 1 from January 13, 2021.
+* "XNAT-PIC: expanding XNAT for image archiving and processing to Preclinical Imaging Centers". Demonstrator 5 from Populating EOSC-Life: Success stories for the Demonstrators – Session 1 from January 13, 2021.<br>
 [![](https://img.youtube.com/vi/cpEcfIJJqCo/0.jpg)](https://youtu.be/cpEcfIJJqCo "")
 <!-- CONTACT -->
 ## Contact

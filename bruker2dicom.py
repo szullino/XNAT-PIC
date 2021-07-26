@@ -567,7 +567,7 @@ def bruker2dicom(folder_to_convert, master):
                     if "diffusion" in ds_temp.ProtocolName:
                         string = str(method_parameters.get("PVM_DwBvalEach"))
                         b_values = re.findall("[0-9]+", string)
-                        b_values.pop(0)
+                        #b_values.pop(0)
                         b_values.insert(0, "0")
                         bvalues = []
                         for elem in b_values:

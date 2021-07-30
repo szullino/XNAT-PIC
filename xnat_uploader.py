@@ -66,7 +66,9 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                         print(file_list[0])                   
                         try:
                             ds = pydicom.dcmread(file_list[0])
-                            subject_id = "_".join(subject_dir.split('.')) # remove .xyz in subject_id
+                            print("subject_dir", subject_dir)
+                            subject_id = subject_dir.split('.')[0]  # remove .xyz in subject_id
+                            print("subject_id is ", subject_id)
                             if '.' in ds.StudyTime:                           
                                 ds.StudyTime = ds.StudyTime.split('.',1)[0]
                             ds.StudyTime = "_".join(ds.StudyTime.split('.'))
@@ -110,6 +112,7 @@ def xnat_uploader(folder_to_convert, project_id, num_cust_vars, address, user, p
                                     for i, element in enumerate(custom_vars):
                                         subject.fields[element] = custom_values[i]
                                         exp.fields[element] = custom_values[i]
+                                        print("custom values ",custom_values[i])
                                     os.remove(zip_dst)
                             except Exception as e:
                                 messagebox.showerror("XNAT-PIC - Uploader", e)
